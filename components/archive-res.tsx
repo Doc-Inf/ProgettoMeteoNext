@@ -37,14 +37,15 @@ export function ArchiveResDaily({
         </h3>
       )}
       <ContainerCols>
-        {data.map((item) =>
+        {data.map((item, idx) =>
           item.tabs.length > 1 ? (
-            <InfoTabs {...item} />
+            <InfoTabs key={idx} {...item} />
           ) : (
             <Info
               title={item.title}
               value={item.tabs[0].value}
               unit={item.unit}
+              key={idx}
               subtitle="Valore di media"
             />
           )
@@ -78,16 +79,16 @@ export function ArchiveResMonthly({
           <TabsList
             className={`grid grid-cols-${data.graphs.length} w-[100%] py-2 rounded-lg *:text-xs md:text-sm dark:bg-background/20`}
           >
-            {data.graphs.map((item) => (
-              <TabsTrigger value={item.name}>
+            {data.graphs.map((item, idx) => (
+              <TabsTrigger key={idx} value={item.name}>
                 {item.name[0].toUpperCase()}
                 {item.name.slice(1)}
               </TabsTrigger>
             ))}
           </TabsList>
 
-          {data.graphs.map((item) => (
-            <TabsContent value={item.name}>
+          {data.graphs.map((item, idx) => (
+            <TabsContent key={idx} value={item.name}>
               <MyChart {...item} IsInView={true} days={dates} />
             </TabsContent>
           ))}

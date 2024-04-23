@@ -8,8 +8,8 @@ export default async function page() {
 
   return (
     <div className="mt-20">
-      {data.map((d) => (
-        <div>{JSON.stringify(d, null, 2)}</div>
+      {data.map((d, idx) => (
+        <div key={idx}>{JSON.stringify(d, null, 2)}</div>
       ))}
     </div>
   );
