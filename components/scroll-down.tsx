@@ -1,0 +1,33 @@
+"use client";
+
+import { ArrowDown } from "lucide-react";
+import { useTheme } from "next-themes";
+// @ts-expect-error
+import ReactCurvedText from "react-curved-text";
+
+export default function ScrollDown() {
+  const { theme } = useTheme();
+  return (
+    <div className="absolute bottom-0">
+      <ReactCurvedText
+        width="300"
+        height={300}
+        cx="150"
+        cy={150}
+        rx="30"
+        ry="30"
+        startOffset={0}
+        reversed={false}
+        text="SCROLL - SCROLL - SCROLL -"
+        textProps={{
+          style: { fontSize: 12 },
+        }}
+        textPathProps={{ fill: theme === "dark" ? "#ffffff" : "#000" }}
+        tspanProps={{ dy: "13" }}
+        ellipseProps={null}
+        svgProps={{ className: "rotating-curved-text" }}
+      />
+      <ArrowDown className="absolute transform -translate-x-1/2 -translate-y-1/2 text-primary top-1/2 left-1/2" />
+    </div>
+  );
+}
