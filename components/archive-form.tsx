@@ -132,12 +132,17 @@ export function formatDBWeather(
   }
 }
 export function ArchiveForm() {
+  const [loading, setLoading] = React.useState(false);
   const [date, setDate] = React.useState<Date>();
   const [mode, setMode] = React.useState<"day" | "month" | null>(null);
   const [data, setData] = React.useState<
     WeatherData[] | WeatherDataMonthly | null
   >(null);
+  const updateMode = (value: "day" | "month") => {
+    onSubmit().then(() => setMode(value));
+  };
   async function onSubmit() {
+    setLoading(true);
     if (!date || !mode) return;
     if (mode === "day") {
       await fetch(`/api/day`, {
@@ -176,6 +181,7 @@ export function ArchiveForm() {
           console.log(data);
         });
     }
+    setLoading(false);
   }
   return (
     <>
@@ -209,7 +215,7 @@ export function ArchiveForm() {
           </PopoverContent>
         </Popover>
 
-        <Select onValueChange={(value: "day" | "month") => setMode(value)}>
+        <Select onValueChange={(value: "day" | "month") => updateMode(value)}>
           <SelectTrigger className="w-[180px] rounded-3xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900/[0.5] dark:border-border/20 bg-white border border-zinc-200/50">
             <SelectValue placeholder="Modalità" className="text-white" />
             <p className="sr-only">Modalità di ricerca </p>
