@@ -1,6 +1,6 @@
 "use client";
 import { useTheme } from "next-themes";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 
 export default function MyChart({
@@ -48,7 +48,7 @@ export default function MyChart({
     },
     xaxis: {
       labels: {
-        show: !days ? true : days.length < 7,
+        show: !days ? true : true,
         style: {
           fontFamily: "system-ui",
           fontWeight: 700,

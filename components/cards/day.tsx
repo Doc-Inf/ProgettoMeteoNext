@@ -10,8 +10,8 @@ export default function Day({
   icon: React.ReactNode;
   max: number;
   min: number;
-  day: number;
-  day2: string;
+  day: string;
+  day2?: string;
 }) {
   return (
     <div className="flex items-center justify-between text-primary-foregroud">
