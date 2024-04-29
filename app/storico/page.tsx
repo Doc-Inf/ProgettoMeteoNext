@@ -1,5 +1,5 @@
-import { ArchiveForm } from "@/components/archive-form";
-import { ArchiveResMonthly } from "@/components/archive-res";
+import { ArchiveForm } from "@/components/archive/archive-form";
+import { ArchiveResMonthly } from "@/components/archive/archive-res";
 import ArchiveHeading from "@/components/headings/archive-heading";
 
 const mockData = {

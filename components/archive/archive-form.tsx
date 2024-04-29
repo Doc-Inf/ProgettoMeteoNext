@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Month, format } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon, Search, Sunrise } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import {
   ArchiveResDaily,
   ArchiveResMonthly,
@@ -106,82 +106,89 @@ export function formatDBWeather(
   }
   if (mode === "graph") {
     const days = getDayMap();
+    const keys = Object.keys(days);
     const res: WeatherDataMonthly["graphs"] = [
       {
         name: "Temperatura",
-        data: Object.values(days).map((d) => getAvg("tempOut", d)),
+        data: keys.map((k) => getAvg("tempOut", days[k])),
         unit: "°C",
       },
       {
         name: "Umidità",
-        data: Object.values(days).map((d) => getAvg("outHum", d)),
+        data: keys.map((k) => getAvg("outHum", days[k])),
         unit: "%",
       },
       {
         name: "Pressione",
-        data: Object.values(days).map((d) => getAvg("bar", d)),
+        data: keys.map((k) => getAvg("bar", days[k])),
         unit: "hPa",
       },
       {
         name: "Precipitazioni",
-        data: Object.values(days).map((d) => getAvg("rain", d)),
+        data: keys.map((k) => getAvg("rain", days[k])),
         unit: "mm",
       },
     ];
-    return res;
+    return { graphs: res, days: keys };
   }
 }
+
 export function ArchiveForm() {
-  const [loading, setLoading] = React.useState(false);
   const [date, setDate] = React.useState<Date>();
   const [mode, setMode] = React.useState<"day" | "month" | null>(null);
-  const [data, setData] = React.useState<
-    WeatherData[] | WeatherDataMonthly | null
-  >(null);
-  const updateMode = (value: "day" | "month") => {
-    onSubmit().then(() => setMode(value));
-  };
-  async function onSubmit() {
-    setLoading(true);
-    if (!date || !mode) return;
-    if (mode === "day") {
+  const [monthData, setMonthData] = React.useState<WeatherDataMonthly | null>(
+    null
+  );
+  const [dayData, setDayData] = React.useState<WeatherData[] | null>(null);
+
+  async function onSubmit(
+    day = date as Date | undefined,
+    currMode = mode as "day" | "month"
+  ) {
+    setMode(currMode);
+    setDate(day);
+    if (!day || !currMode) return;
+    if (currMode === "day") {
       await fetch(`/api/day`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          day: format(date, "yyyy-MM-dd"),
+          day: format(day, "yyyy-MM-dd"),
         }),
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
-          setData(formatDBWeather(data) as WeatherData[]);
+          setDayData(formatDBWeather(data) as WeatherData[]);
+          setMonthData(null);
         });
     }
-    if (mode === "month") {
+    if (currMode === "month") {
       await fetch(`/api/month`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          day: format(date, "yyyy-MM-dd"),
+          day: format(day, "yyyy-MM-dd"),
         }),
       })
         .then((res) => res.json())
         .then((data) => {
           const resOverview = formatDBWeather(data) as WeatherData[];
-          const resGraphs = formatDBWeather(
-            data,
-            "graph"
-          ) as WeatherDataMonthly["graphs"];
-          setData({ overview: resOverview, graphs: resGraphs });
-          console.log(data);
+          const resGraphs = formatDBWeather(data, "graph") as {
+            graphs: WeatherDataMonthly["graphs"];
+            days: string[];
+          };
+          setMonthData({
+            overview: resOverview,
+            graphs: resGraphs.graphs,
+            days: resGraphs.days,
+          });
+          setDayData(null);
         });
     }
-    setLoading(false);
   }
   return (
     <>
@@ -209,13 +216,15 @@ export function ArchiveForm() {
             <Calendar
               mode="single"
               selected={date}
-              onSelect={setDate}
+              onSelect={(day) => onSubmit(day)}
               initialFocus
             />
           </PopoverContent>
         </Popover>
 
-        <Select onValueChange={(value: "day" | "month") => updateMode(value)}>
+        <Select
+          onValueChange={(value: "day" | "month") => onSubmit(date, value)}
+        >
           <SelectTrigger className="w-[180px] rounded-3xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900/[0.5] dark:border-border/20 bg-white border border-zinc-200/50">
             <SelectValue placeholder="Modalità" className="text-white" />
             <p className="sr-only">Modalità di ricerca </p>
@@ -240,21 +249,16 @@ export function ArchiveForm() {
         </Select>
         <Button
           className="border shadow-md rounded-2xl shadow-input dark:shadow-none dark:border-border/20 border-zinc-200/50"
-          onClick={onSubmit}
+          onClick={() => onSubmit()}
         >
           <Search className="w-4 h-4" />
         </Button>
       </div>
-      {data && mode === "day" ? (
-        <ArchiveResDaily data={(data as WeatherData[]) || []} day={date} />
-      ) : (
-        data &&
-        mode === "month" && (
-          <ArchiveResMonthly
-            data={data as WeatherDataMonthly}
-            day={date ? date : new Date()}
-          />
-        )
+      {date && monthData && mode === "month" && (
+        <ArchiveResMonthly data={monthData} />
+      )}
+      {date && dayData && mode === "day" && (
+        <ArchiveResDaily data={dayData} day={date} />
       )}
     </>
   );
