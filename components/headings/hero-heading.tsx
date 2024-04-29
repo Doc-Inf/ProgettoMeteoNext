@@ -1,7 +1,12 @@
 import { motion } from "framer";
 import ScrollDown from "../scroll-down";
+import { Ref, RefObject } from "react";
 
-export default function HeroHeading() {
+export default function HeroHeading({
+  scrollRef,
+}: {
+  scrollRef: RefObject<HTMLDivElement>;
+}) {
   return (
     <motion.div
       className="relative flex items-center justify-center h-[75vh] md:h-dvh flex-col"
@@ -17,7 +22,7 @@ export default function HeroHeading() {
           Velletri.
         </p>
       </div>
-      <ScrollDown />
+      <ScrollDown scrollRef={scrollRef} />
     </motion.div>
   );
 }

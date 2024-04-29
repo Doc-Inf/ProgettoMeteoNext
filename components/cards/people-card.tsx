@@ -30,7 +30,7 @@ export default function PeopleCard({
         <ScrollArea className={`${single ? " " : "h-60"}`}>
           {people.map((person, index) => (
             <div key={index} className="flex items-center my-2 space-x-4">
-              <span className="flex w-2 h-2 translate-y-1 rounded-full bg-primary" />
+              <span className="flex w-2 h-2 rounded-full translate-y-1 bg-primary" />
               <div className="space-y-1">
                 <p className="text-lg font-medium leading-none">
                   {person.name}
