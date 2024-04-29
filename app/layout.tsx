@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import NavBar from "@/components/nav";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import NavBar from "@/components/navbar/nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <NavBar />
           {children}
+          <ModeToggle className="fixed bottom-10 left-5" />
         </ThemeProvider>
       </body>
     </html>
