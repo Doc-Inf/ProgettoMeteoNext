@@ -1,5 +1,6 @@
 import { Cloud, CloudRain, Sun, SunDim } from "lucide-react";
 
+// WeatherZ algo found here: https://earthscience.stackexchange.com/questions/16366/weather-forecast-based-on-pressure-temperature-and-humidity-only-for-implement
 const ZMAP = [
   "Settled Fine",
   "Fine Weather",
