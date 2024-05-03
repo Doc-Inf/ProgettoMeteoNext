@@ -1,234 +1,174 @@
-import { Clock, Cloud, CloudRain, Droplet, ParkingMeter } from "lucide-react";
+import { ChevronDown, Clock } from "lucide-react";
 import { Container, ContainerCols } from "../container";
 import InfoTabs from "../infoTabs";
 import Info from "../cards/info";
-import { format } from "date-fns";
-import { it } from "date-fns/locale";
 import { Separator } from "../ui/separator";
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useState } from "react";
+import { Collapsible, CollapsibleContent } from "../ui/collapsible";
+import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
+import { motion } from "framer";
+import { Button } from "../ui/button";
+import HeroGraphs from "./hero-graphs";
+import { Weather, WeatherDetails } from "../icons/icons";
+import TooltipHeader from "../report/tooltip-header";
+import { TITLEMATCHER, UNITMATCHER, WeatherOverviewData } from "@/app/page";
+import { useWeather } from "@/lib/useWeather";
 
-/*
-type Tab = { key: "Attuale" | "Massima" | "Media"; value: number };
-
-interface WeatherOverviewData {
-  temp: Tab[];
-  humidity: Tab[];
-  rain: number;
-  pressure: Tab[];
-  delta: {
-    temp: string;
-    humidity: string;
-    rain: string;
-    pressure: string;
-  };
-}
-const KEYMATCHER: Record<string, keyof WeatherOverviewData["delta"]> = {
-  temperaturaUltimaRilevazione: "temp",
-  umiditaUltimaRilevazione: "humidity",
-  pressioneUltimaRilevazione: "pressure",
-} as const;
-const TITLEMATCHER: Record<keyof WeatherOverviewData["delta"], string> = {
-  temp: "Temperatura",
-  humidity: "Umidita'",
-  rain: "Precipitazioni",
-  pressure: "Pressione",
-} as const;
-const UNITMATCHER: Record<keyof WeatherOverviewData["delta"], string> = {
-  temp: "°C",
-  humidity: "%",
-  rain: "mm",
-  pressure: "hPa",
-} as const;
-// TBD: db res type
-function getDelta(data: any): WeatherOverviewData["delta"] {
-  const curr = data.ultimaRilevazione;
-  const before = data.rilevazioneGiornoPrimaUltima;
-
-  const delta = {} as WeatherOverviewData["delta"];
-
-  Object.keys(curr).forEach((key) => {
-    if (!(key in KEYMATCHER)) return;
-    const deltaKey = KEYMATCHER[key as keyof typeof KEYMATCHER];
-
-    if (before[key] === null || curr[key] === null) {
-      delta[deltaKey] = "";
-      return;
-    }
-    if (deltaKey === "rain") {
-      delta[deltaKey] = "Pioggia odierna";
-      return;
-    }
-
-    curr[key] = Number(curr[key]);
-    before[key] = Number(before[key]);
-
-    delta[deltaKey] =
-      (((curr[key] - before[key]) / before[key]) * 100).toFixed(2) + " %";
-
-    if (!delta[deltaKey].startsWith("-"))
-      delta[deltaKey] = "+" + delta[deltaKey];
-    return;
-  });
-
-  return delta;
-}
-function getTabs(data: any, key: string): Tab[] {
-  const capKey = key[0].toUpperCase() + key.substring(1);
-  return [
-    {
-      key: "Attuale",
-      value: data.ultimaRilevazione[key + "UltimaRilevazione"],
-    },
-    { key: "Massima", value: data["max" + capKey + "Settimanale"][6] },
-    { key: "Media", value: data["min" + capKey + "Settimanale"][6] },
-  ];
-}*/
 type vals = {
   min: number;
   max: number;
   curr: number;
   delta: string;
 };
-interface HeroOverviewProps {
-  data: {
-    temp: vals;
-    humidity: vals;
-    rain: number;
-    pressure: vals;
+
+const HeroOverview = forwardRef<
+  HTMLDivElement,
+  { data: WeatherOverviewData; lastUpdate: string }
+>(({ data, lastUpdate }, ref) => {
+  const { status: weather, icon: weatherIcon } = useWeather({
+    temperature: data.temp[0].value,
+    humidity: data.humidity[0].value,
+    pressure: data.pressure[0].value,
+  });
+
+  const btnVariant = {
+    open: { rotate: 180 },
+    closed: { rotate: 0 },
   };
-  lastUpdate: string;
-}
-const HeroOverview = forwardRef<HTMLDivElement, HeroOverviewProps>(
-  ({ data, lastUpdate }: HeroOverviewProps, ref) => {
-    /* optional version
-  const [loading, setLoading] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  const [todayData, setTodayData] = useState<WeatherOverviewData | null>(null);
 
-  useEffect(() => {
-    setLoading(true);
-    try {
-      fetch("http://localhost:80/TestMeteo3/php/datiHome.php")
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch");
-          return res.json();
-        })
-        .then((data): void => {
-          console.log(data);
-          setLastUpdate(
-            format(data.giorniSettimanaCorrente[6], "dd MMMM, hh:mm", {
-              locale: it,
-            })
-          );
-          setTodayData({
-            temp: getTabs(data, "temperatura"),
-            humidity: getTabs(data, "umidita"),
-            pressure: getTabs(data, "pressione"),
-            rain: data.pressioneSettimanale,
-            delta: getDelta(data),
-          });
-        });
-    } catch (error) {
-      console.log(error);
-    }
-    setLoading(false);
-  }, []); */
-    return (
-      <ContainerCols>
-        <div className="col-span-full" ref={ref}>
-          <Container>
-            <div className="relative flex justify-between w-full">
-              <div className="flex items-center gap-2">
-                <Cloud className="text-primary" />
-                <h4 className="text-lg font-normal tracking-tight scroll-m-20">
-                  Il meteo è attualmente{" "}
-                  <span className="font-semibold">nuvoloso</span>
-                </h4>
-              </div>
-              <Separator
-                orientation="vertical"
-                className="absolute h-8 -translate-x-1/2 -translate-y-1/2 bg-primary/20 left-1/2 top-1/2"
-              />
-              <div className="flex items-center gap-2">
-                <Clock className="text-primary" />
-                <h4 className="text-lg font-normal tracking-tight scroll-m-20">
-                  {" "}
-                  Ultima rilevazione:{" "}
-                  <span className="font-semibold">{lastUpdate}</span>
-                </h4>
-              </div>
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <div className="px-4 mb-8 col-span-full" ref={ref}>
+        <Container>
+          <div className="relative w-full space-y-4 md:flex md:justify-between md:space-y-0 ">
+            <div className="flex items-center gap-2">
+              {weatherIcon}
+              <h4 className="text-lg font-normal tracking-tight scroll-m-20">
+                Il meteo è attualmente{" "}
+                <span className="font-semibold">{weather.toLowerCase()}</span>
+              </h4>
             </div>
-          </Container>
-        </div>
-        {/*Object.keys(todayData || {}).map((k) => {
-        if (!todayData) return;
-        const key = k as keyof WeatherOverviewData;
-        if (key === "delta") return;
-        if (key === "rain")
-          return (
-            <Info
-              title={TITLEMATCHER[key]}
-              value={todayData[key]}
-              icon={<CloudRain stroke="#17A34A" />}
-              unit={UNITMATCHER[key]}
-              subtitle="Pioggia odierna"
+            <Separator
+              orientation="vertical"
+              className="absolute hidden h-8 -translate-x-1/2 -translate-y-1/2 md:block bg-primary/20 left-1/2 top-1/2"
             />
-          );
+            <Separator
+              orientation="horizontal"
+              className="block md:hidden absolute w-full -translate-x-1/2 -translate-y-1/2 bg-primary/20 left-1/2 top-1/2 !-mt-0"
+            />
+            <div className="flex items-center gap-2">
+              <Clock className="text-primary" />
+              <h4 className="text-lg font-normal tracking-tight scroll-m-20">
+                {" "}
+                Ultima rilevazione:{" "}
+                <span className="font-semibold">{lastUpdate}</span>
+              </h4>
+            </div>
+          </div>
+        </Container>
+      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <ContainerCols>
+          {Object.keys(data).map((k, idx) => {
+            const key = k as keyof WeatherOverviewData;
+            if (key === "delta" || key === "windDir" || key === "windSpeed")
+              return;
 
-        return (
-          <InfoTabs
-            key={key}
-            tabs={todayData[key]}
-            unit={UNITMATCHER[key]}
-            title={TITLEMATCHER[key]}
-            sub={todayData.delta[key]}
-          />
-        );
-      })*/}
+            const iconKey = (key[0].toUpperCase() +
+              key.slice(1)) as keyof typeof WeatherDetails;
 
-        <InfoTabs
-          tabs={[
-            { key: "Attuale", value: data.temp.curr },
-            { key: "Minima", value: data.temp.min },
-            { key: "Massima", value: data.temp.max },
-          ]}
-          title="Temperatura"
-          icon={<Cloud stroke="#17A34A" />}
-          sub={data.temp.delta}
-          unit="°C"
-        />
+            const icon = WeatherDetails[iconKey]({ stroke: "#17A34A" });
 
-        <InfoTabs
-          tabs={[
-            { key: "Attuale", value: data.humidity.curr },
-            { key: "Minima", value: data.humidity.min },
-            { key: "Massima", value: data.humidity.max },
-          ]}
-          title="Umidità"
-          icon={<Droplet stroke="#17A34A" />}
-          sub={data.humidity.delta}
-          unit="%"
-        />
-        <InfoTabs
-          title="Pressione"
-          icon={<ParkingMeter stroke="#17A34A" />}
-          tabs={[
-            { key: "Attuale", value: data.pressure.curr },
-            { key: "Minima", value: data.pressure.min },
-            { key: "Massima", value: data.pressure.max },
-          ]}
-          sub={data.pressure.delta}
-          unit="hPa"
-        />
-        <Info
-          title="Precipitazini"
-          icon={<CloudRain stroke="#17A34A" />}
-          value={data.rain}
-          unit="mm"
-          subtitle="Pioggia odierna"
-        />
-      </ContainerCols>
-    );
-  }
-);
+            if (key === "rain")
+              return (
+                <Info
+                  key={key + idx}
+                  title={TITLEMATCHER[key]}
+                  value={data[key]}
+                  icon={<Weather.Rainy stroke="#17A34A" />}
+                  unit={UNITMATCHER[key]}
+                  subtitle="Pioggia odierna"
+                />
+              );
+
+            return (
+              <InfoTabs
+                title={TITLEMATCHER[key]}
+                key={key + idx}
+                tabs={data[key]}
+                unit={UNITMATCHER[key]}
+                icon={icon}
+                sub={data.delta[key]}
+              />
+            );
+          })}
+        </ContainerCols>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: -20 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          initial="hidden"
+          animate={isOpen ? "visible" : "hidden"}
+          transition={{ duration: 0.6, type: "just" }}
+          className="mt-4 space-y-3"
+        >
+          <CollapsibleContent>
+            <ContainerCols className="grid-cols-1  md:!grid-cols-5">
+              <div className="col-span-3 *:mt-0 *:h-full row-span-2">
+                <HeroGraphs
+                  title="giornata"
+                  inViewLoad={false}
+                  graphs={{
+                    temp: Object.values(data.temp).map((v) => v.value),
+                    humidity: Object.values(data.humidity).map((v) => v.value),
+                    pressure: Object.values(data.pressure).map((v) => v.value),
+                    rain: [data.rain],
+                  }}
+                  days={["Attuale", "Massima", "Minima"]}
+                />
+              </div>
+
+              {["windDir", "windSpeed"].map((k, idx) => {
+                const key = k as "windDir" | "windSpeed";
+                return (
+                  <div className="col-span-3 *:h-full md:col-span-2 " key={idx}>
+                    <Info
+                      key={key + idx}
+                      title={TITLEMATCHER[key]}
+                      value={data[key]}
+                      icon={<WeatherDetails.Wind stroke="#17A34A" />}
+                      unit={UNITMATCHER[key]}
+                      subtitle="Informazioni vento odierne"
+                    />
+                  </div>
+                );
+              })}
+            </ContainerCols>
+          </CollapsibleContent>
+        </motion.div>
+        <CollapsibleTrigger className="w-full mt-4">
+          <Button>
+            {/* ANIMATED WITH ROTATION */}
+            <TooltipHeader
+              text={
+                isOpen ? "Mostra meno informazioni" : "Mostra più informazioni"
+              }
+            >
+              <motion.div
+                animate={isOpen ? "open" : "closed"}
+                variants={btnVariant}
+              >
+                <ChevronDown />
+              </motion.div>
+            </TooltipHeader>
+            <span className="sr-only">Toggle</span>
+          </Button>
+        </CollapsibleTrigger>
+      </Collapsible>
+    </>
+  );
+});
+HeroOverview.displayName = "HeroOverview";
 export default HeroOverview;
