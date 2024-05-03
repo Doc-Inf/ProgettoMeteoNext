@@ -83,7 +83,7 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     try {
-      fetch("api/db", { method: "POST" })
+      fetch("api/db", { method: "GET" })
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch");
           return res.json();

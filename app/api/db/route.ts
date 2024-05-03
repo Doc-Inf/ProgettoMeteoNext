@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function POST() {
+export async function GET() {
   try {
     const res = await fetch(
       "https://www.itisvallauri.net/meteo3//php/datiHome.php"
