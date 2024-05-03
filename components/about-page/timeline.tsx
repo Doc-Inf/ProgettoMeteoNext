@@ -2,7 +2,7 @@ import SubjCard from "../cards/subj-card";
 
 export default function Timeline() {
   return (
-    <div className="my-24 space-y-4 lg:columns-3">
+    <div className="my-24 grid gap-4 lg:grid-cols-3">
       <SubjCard
         title="Fondazione scuola"
         par="La scuola viene istituita nell' A. S. 1960 /61 come succursale dell'I.T.I.S. `E. Fermi` di Roma all'epoca esistevano solo tre sezioni."

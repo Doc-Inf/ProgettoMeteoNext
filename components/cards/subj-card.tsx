@@ -17,12 +17,12 @@ export default function SubjCard({
   sub?: string;
 }) {
   return (
-    <Card className="relative px-4 pb-8 m-auto shadow-sm shadow-primary lg:max-w-screen-lg">
+    <Card className="relative px-4 pb-8 m-auto shadow-sm shadow-primary lg:max-w-screen-lg h-[300px]">
       <CardHeader className="flex flex-col items-center justify-between md:flex-row">
         <CardTitle
           className={` ${
-            !src && `text-center w-full`
-          } pb-2 mt-8 text-3xl font-normal tracking-tight md:text-3xl 2xl:text-4xl scroll-m-20 md:mt-0 whitespace-nowrap`}
+            !src && `text-center w-full `
+          } pb-2 mt-8 text-3xl font-normal tracking-tight md:text-3xl 2xl:text-4xl scroll-m-20 md:mt-0`}
         >
           {title}
         </CardTitle>
@@ -35,7 +35,7 @@ export default function SubjCard({
           </div>
         )}
       </CardHeader>
-      <div className="px-4 text-justify w-[95%]">
+      <CardDescription className="px-4 text-justify w-[95%] overflow-scroll h-[120px] lg:overflow-hidden lg:h-full">
         <p
           className={`leading-6 [&:not(:first-child)]:mt-6 ${
             src ? `text-pretty` : `text-center`
@@ -48,7 +48,7 @@ export default function SubjCard({
             {sub}
           </blockquote>
         )}
-      </div>
+      </CardDescription>
     </Card>
   );
 }

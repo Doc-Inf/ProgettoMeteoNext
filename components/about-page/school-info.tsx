@@ -11,7 +11,7 @@ export default function SchoolInfo() {
         37 alunni la sezione C di 39 alunni le quali erano seguite dal Prof.
         Diana Umberto.
       </h4>
-      <div className="order-3 overflow-scroll text-justify">
+      <div className="order-3 text-justify ">
         <p className="leading-6 [&:not(:first-child)]:mt-4 text-pretty text-foreground/95">
           Il quale è stato il coordinatore con la partecipazione dell&lsquo;
           I.T.I.S. E. Fermi di Roma per l&lsquo; avvio e la gestione iniziale
