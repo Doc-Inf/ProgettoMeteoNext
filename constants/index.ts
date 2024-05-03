@@ -1,7 +1,7 @@
 export const NAV_LINKS = [
   {
     name: "Home",
-    href: "/",
+    href: "https://www.itisvallauri.net/meteo3/",
   },
   {
     name: "Chi siamo",
