@@ -17,7 +17,12 @@ export default function TooltipHeader({
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent>{text}</TooltipContent>
+        <TooltipContent
+          className="rotate-0
+ "
+        >
+          {text}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

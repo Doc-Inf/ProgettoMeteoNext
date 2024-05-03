@@ -12,10 +12,12 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 
 export default function HeroWeek({
+  title,
   min,
   max,
   days,
 }: {
+  title: "giornata" | "settimana";
   min: number[];
   max: number[];
   days: string[];
@@ -35,9 +37,7 @@ export default function HeroWeek({
       >
         <div className="flex items-center justify-between">
           {/* TAB TITLE */}
-          <h4 className="text-2xl font-semibold">
-            Informazioni sulla settimana
-          </h4>
+          <h4 className="text-2xl font-semibold">Informazioni sulla {title}</h4>
         </div>
         {/* CONTENT CONTAINER */}
         <motion.div

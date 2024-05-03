@@ -10,6 +10,8 @@ const MyChart = dynamic(() => import("@/components/myChart"), { ssr: false });
 export default function HeroGraphs({
   graphs,
   days,
+  title,
+  inViewLoad = true,
 }: {
   graphs: {
     temp: number[];
@@ -18,6 +20,8 @@ export default function HeroGraphs({
     rain: number[];
   };
   days: string[];
+  title: "giornata" | "settimana";
+  inViewLoad?: boolean;
 }) {
   // load graph only when in view
   const graph = useRef(null);
@@ -30,7 +34,7 @@ export default function HeroGraphs({
         {/* TITLE */}
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold" ref={graph}>
-            Grafici della settimana
+            Grafici della {title}
           </h4>
         </div>
         <TabsList className="grid grid-cols-4 w-[100%] *:text-xs md:text-sm dark:bg-background/20">
@@ -42,7 +46,7 @@ export default function HeroGraphs({
         <TabsContent value="temperature">
           {" "}
           <MyChart
-            IsInView={IsInViewGraph}
+            IsInView={inViewLoad ? IsInViewGraph : true}
             name="temperatura"
             data={graphs.temp}
             days={days}
@@ -52,7 +56,7 @@ export default function HeroGraphs({
         <TabsContent value="humidity">
           {" "}
           <MyChart
-            IsInView={IsInViewGraph}
+            IsInView={inViewLoad ? IsInViewGraph : true}
             name="umidità"
             data={graphs.humidity}
             days={days}
@@ -62,7 +66,7 @@ export default function HeroGraphs({
         <TabsContent value="pressure">
           {" "}
           <MyChart
-            IsInView={IsInViewGraph}
+            IsInView={inViewLoad ? IsInViewGraph : true}
             name="pressione"
             data={graphs.pressure}
             days={days}
@@ -72,7 +76,7 @@ export default function HeroGraphs({
         <TabsContent value="rain">
           {" "}
           <MyChart
-            IsInView={IsInViewGraph}
+            IsInView={inViewLoad ? IsInViewGraph : true}
             name="precipitazioni"
             data={graphs.rain}
             days={days}

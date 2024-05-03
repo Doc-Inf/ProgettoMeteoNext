@@ -88,13 +88,10 @@ export default function InfoTabs({
                   <sup className="font-normal ms-2">{unit}</sup>
                 </h4>
               </CardContent>
-
-              <CardFooter>
-                <p className="text-sm text-muted-foreground">
-                  {tab.sub || sub}
-                </p>
-              </CardFooter>
             </motion.div>
+            <CardFooter>
+              <p className="text-sm text-muted-foreground">{tab.sub || sub}</p>
+            </CardFooter>
           </TabsContent>
         ))}
       </Card>

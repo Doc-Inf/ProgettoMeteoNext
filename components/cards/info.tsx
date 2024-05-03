@@ -17,7 +17,7 @@ export default function Info({
 }: {
   title: string;
   icon?: React.ReactNode;
-  value: number;
+  value: number | string;
   unit?: string;
   subtitle: string;
 }) {
