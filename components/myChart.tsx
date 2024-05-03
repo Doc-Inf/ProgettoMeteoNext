@@ -1,4 +1,5 @@
 "use client";
+import useWindowSize from "@/lib/useWindowSize";
 import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
@@ -18,6 +19,9 @@ export default function MyChart({
 }) {
   // get theme
   const { theme } = useTheme();
+
+  const windowSize = useWindowSize();
+
   // state obj for graph
   const [series, setSeries] = useState<ApexAxisChartSeries>([
     {
@@ -47,6 +51,7 @@ export default function MyChart({
       enabled: false,
     },
     xaxis: {
+      type: "category",
       labels: {
         show: !days ? true : true,
         style: {
@@ -128,6 +133,24 @@ export default function MyChart({
       },
     }));
   }, [theme]);
+
+  useEffect(() => {
+    if (days && days?.length > 5) {
+      setOptions((prev) => {
+        const newCategories =
+          windowSize.width && windowSize.width > 468
+            ? days ?? []
+            : days?.filter((_, idx) => idx % 3 === 0) ?? [];
+        return {
+          ...prev,
+          xaxis: {
+            ...prev.xaxis,
+            overwriteCategories: newCategories,
+          },
+        };
+      });
+    }
+  }, [windowSize, days]);
 
   return (
     // load only when in view
