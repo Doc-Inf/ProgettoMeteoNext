@@ -58,7 +58,7 @@ export function ReportTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   if (header.id === "type")
                     return (
-                      <TableHead>
+                      <TableHead key={headerGroup.id}>
                         {type === "month" ? "Mese" : "Anno"}
                       </TableHead>
                     );

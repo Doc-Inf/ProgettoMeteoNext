@@ -11,7 +11,11 @@ import { Button } from "../ui/button";
 import HeroGraphs from "./hero-graphs";
 import { Weather, WeatherDetails } from "../icons/icons";
 import TooltipHeader from "../report/tooltip-header";
-import { TITLEMATCHER, UNITMATCHER, WeatherOverviewData } from "@/app/page";
+import {
+  TITLEMATCHER,
+  UNITMATCHER,
+  type WeatherOverviewData,
+} from "@/constants";
 import { useWeather } from "@/lib/useWeather";
 
 type vals = {
