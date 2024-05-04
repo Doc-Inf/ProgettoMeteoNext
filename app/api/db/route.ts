@@ -3,7 +3,10 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const res = await fetch(
-      "https://www.itisvallauri.net/meteo3//php/datiHome.php"
+      "https://www.itisvallauri.net/meteo3//php/datiHome.php",
+      {
+        method: "GET",
+      }
     );
 
     const data = await res.json();

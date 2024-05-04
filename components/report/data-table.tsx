@@ -47,7 +47,6 @@ export function ReportTable<TData, TValue>({
     },
   });
   async function onSubmit() {}
-  console.log("start");
   return (
     <>
       <div className="md:px-10">
@@ -87,7 +86,6 @@ export function ReportTable<TData, TValue>({
                   className="border-0 border-b bg-background hover:bg-neutral-200/50 dark:hover:bg-neutral-900"
                 >
                   {row.getVisibleCells().map((cell) => {
-                    console.log(cell.getValue());
                     return (
                       cell.column.columnDef.header !== "hide" && (
                         <TableCell key={cell.id}>

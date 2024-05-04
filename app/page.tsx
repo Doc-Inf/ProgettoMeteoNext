@@ -89,7 +89,6 @@ export default function Home() {
           return res.json();
         })
         .then((data): void => {
-          console.log(data);
           setLastUpdate(
             format(
               data.ultimaRilevazione.dataOraUltimaRilevazione,
@@ -123,7 +122,7 @@ export default function Home() {
           );
         });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   }, []);
