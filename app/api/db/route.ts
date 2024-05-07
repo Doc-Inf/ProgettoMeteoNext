@@ -6,6 +6,11 @@ export async function GET() {
       "https://www.itisvallauri.net/meteo3//php/datiHome.php",
       {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // revalidate every 5 minutes
+        next: { revalidate: 300 },
       }
     );
 

@@ -1,6 +1,6 @@
 import { motion } from "framer";
 import ScrollDown from "../scroll-down";
-import { Ref, RefObject } from "react";
+import { RefObject } from "react";
 
 export default function HeroHeading({
   scrollRef,

@@ -130,7 +130,15 @@ const HeroOverview = forwardRef<
                     pressure: Object.values(data.pressure).map((v) => v.value),
                     rain: [data.rain],
                   }}
-                  days={["Attuale", "Massima", "Minima"]}
+                  days={[
+                    "3:00",
+                    "6:00",
+                    "9:00",
+                    "12:00",
+                    "15:00",
+                    "18:00",
+                    "21:00",
+                  ]}
                 />
               </div>
 
