@@ -15,7 +15,7 @@ import {
   TITLEMATCHER,
   UNITMATCHER,
   type WeatherOverviewData,
-} from "@/constants";
+} from "@/constants/weather-types";
 import { useWeather } from "@/lib/useWeather";
 
 type vals = {
@@ -63,7 +63,7 @@ const HeroOverview = forwardRef<
             />
             <div className="flex items-center gap-2">
               <Clock className="text-primary" />
-              <h4 className="text-lg font-normal tracking-tight scroll-m-20">
+              <h4 className="font-normal tracking-tight text-md md:text-lg scroll-m-20">
                 {" "}
                 Ultima rilevazione:{" "}
                 <span className="font-semibold">{lastUpdate}</span>
@@ -72,6 +72,7 @@ const HeroOverview = forwardRef<
           </div>
         </Container>
       </div>
+
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <ContainerCols>
           {Object.keys(data).map((k, idx) => {
@@ -108,6 +109,7 @@ const HeroOverview = forwardRef<
             );
           })}
         </ContainerCols>
+
         <motion.div
           variants={{
             hidden: { opacity: 0, y: -20 },
@@ -124,6 +126,7 @@ const HeroOverview = forwardRef<
                 <HeroGraphs
                   title="giornata"
                   inViewLoad={false}
+                  // UPDATE THIS !!!
                   graphs={{
                     temp: Object.values(data.temp).map((v) => v.value),
                     humidity: Object.values(data.humidity).map((v) => v.value),

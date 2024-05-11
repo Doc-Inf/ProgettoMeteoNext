@@ -20,7 +20,7 @@ export default function HeroGraphs({
     rain: number[];
   };
   days: string[];
-  title: "giornata" | "settimana";
+  title: "giornata" | "settimana" | "mese";
   inViewLoad?: boolean;
 }) {
   // load graph only when in view
@@ -37,7 +37,7 @@ export default function HeroGraphs({
             Grafici della {title}
           </h4>
         </div>
-        <TabsList className="grid grid-cols-4 w-[100%] *:text-xs md:text-sm dark:bg-background/20">
+        <TabsList className="grid md:grid-cols-4 grid-cols-2 mb-8 h-20 md:h-10 w-[100%] *:text-xs md:text-sm dark:bg-background/20 bg-foreground/5">
           <TabsTrigger value="temperature">Temperatura</TabsTrigger>
           <TabsTrigger value="humidity">Umidità</TabsTrigger>
           <TabsTrigger value="pressure">Pressione</TabsTrigger>

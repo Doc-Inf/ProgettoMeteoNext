@@ -36,7 +36,7 @@ export default function Day({
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-baseline">
-          <h2 className="text-2xl md:text-4xl font-semibold tracking-tight scroll-m-20">
+          <h2 className="text-2xl font-semibold tracking-tight md:text-4xl scroll-m-20">
             {day}
           </h2>
           <p className="text-sm ms-2 text-muted-foreground">{day2}</p>

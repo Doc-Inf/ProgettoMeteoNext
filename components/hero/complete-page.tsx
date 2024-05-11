@@ -12,11 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import {
   type WeatherOverviewData,
   type WeatherGraphs,
-  TITLEMATCHER,
-  KEYMATCHER,
-  UNITMATCHER,
-  type Tab,
-} from "@/constants";
+} from "@/constants/weather-types";
+import { getTabs, getDelta, getGraphs } from "@/constants/functions";
 
 const fetchWeather = async () => {
   const res = await fetch("api/db", {
@@ -29,66 +26,10 @@ const fetchWeather = async () => {
   return res.json();
 };
 
-// TBD: db res type
-function getDelta(data: any): WeatherOverviewData["delta"] {
-  const curr = data.ultimaRilevazione;
-  const before = data.rilevazioneGiornoPrimaUltima;
-
-  const delta = {} as WeatherOverviewData["delta"];
-
-  Object.keys(curr).forEach((key) => {
-    if (!(key in KEYMATCHER)) return;
-    const deltaKey = KEYMATCHER[key as keyof typeof KEYMATCHER];
-
-    if (before[key] === null || curr[key] === null) {
-      delta[deltaKey] = "";
-      return;
-    }
-    if (deltaKey === "rain") {
-      delta[deltaKey] = "Pioggia odierna";
-      return;
-    }
-    if (deltaKey === "windDir" || deltaKey === "windSpeed") {
-      delta[deltaKey] = "Informazioni vento odierne";
-      return;
-    }
-
-    curr[key] = Number(curr[key]);
-    before[key] = Number(before[key]);
-
-    delta[deltaKey] =
-      (((curr[key] - before[key]) / before[key]) * 100).toFixed(2) +
-      " % da ieri";
-
-    if (!delta[deltaKey].startsWith("-"))
-      delta[deltaKey] = "+" + delta[deltaKey];
-    return;
-  });
-
-  return delta;
-}
-
-function getTabs(data: any, key: string): Tab[] {
-  const capKey = key[0].toUpperCase() + key.substring(1);
-  return [
-    {
-      key: "Attuale",
-      value: data.ultimaRilevazione[key + "UltimaRilevazione"],
-    },
-    { key: "Massima", value: data["max" + capKey + "Settimanale"][6] },
-    { key: "Minima", value: data["min" + capKey + "Settimanale"][6] },
-  ];
-}
-
-function getGraphs(data: any, key: string): number[] {
-  if (key === "pressione")
-    return data[key + "Settimanale"].map((x: string) => x.replaceAll(",", ""));
-  return data[key + "Settimanale"];
-}
 export default function Home() {
   const ref = useRef(null);
 
-  const { data, error, isLoading, status } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ["fetchWeather"],
     queryFn: fetchWeather,
   });
@@ -96,7 +37,6 @@ export default function Home() {
   if (isLoading) {
     return (
       <>
-        {" "}
         <HeroHeading scrollRef={ref} />
         <HeroSkeleton ref={ref} />
       </>
@@ -146,10 +86,11 @@ export default function Home() {
   return (
     <>
       <HeroHeading scrollRef={ref} />
+
       <AnimationWrapper>
         <HeroOverview ref={ref} data={todayData} lastUpdate={lastUpdate} />
       </AnimationWrapper>
-      <div className="justify-center max-w-screen-lg px-5 m-auto mt-10 lg:grid-cols-5 lg:grid lg:gap-x-4 lg:px-0">
+      <div className="justify-center px-5 m-auto mt-10 max-w-screen-lg lg:grid-cols-5 lg:grid lg:gap-x-4 lg:px-0">
         <HeroWeek
           title="settimana"
           min={weekData?.minTemp}

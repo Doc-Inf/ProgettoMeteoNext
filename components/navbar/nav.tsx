@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 import Link from "next/link";
 
-import { NAV_LINKS } from "@/constants";
+import { NAV_LINKS } from "@/constants/links";
 import { cn } from "@/lib/utils";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
@@ -19,11 +19,11 @@ export default function NavBar() {
   const pathname = usePathname();
   return (
     <nav className="fixed top-0 z-50 w-screen border backdrop-blur-sm bg-background/90 border-zinc-700/45">
-      <div className="flex items-center justify-between px-4 py-4 m-auto bg-transparent gap-4 md:justify-normal md:px-8">
+      <div className="flex items-center justify-between gap-4 px-4 py-4 m-auto bg-transparent md:justify-normal md:px-8">
         {/* LOGO */}
         <Link
           href="https://www.itisvallauri.edu.it/"
-          className="flex items-center text-xl space-x-2"
+          className="flex items-center space-x-2 text-xl"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -49,6 +49,7 @@ export default function NavBar() {
         <div className="flex md:hidden">
           <Button onClick={handleMenu}>
             <HamburgerMenuIcon />
+            <p className="sr-only">Menu navigazione</p>
           </Button>
         </div>
       </div>
@@ -67,6 +68,7 @@ export default function NavBar() {
                 "!text-secondary-foreground",
                 buttonVariants({ variant: "link" })
               )}
+              onClick={() => setMenu(false)}
               href={l.href}
             >
               {l.name}
