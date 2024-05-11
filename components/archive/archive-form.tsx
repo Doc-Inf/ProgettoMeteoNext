@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Search, Sunrise } from "lucide-react";
 
@@ -22,183 +21,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import {
-  ArchiveResDaily,
-  ArchiveResMonthly,
-  WeatherData,
-  WeatherDataMonthly,
-} from "./archive-res";
-import { WeatherRes } from "@/lib/db";
+import { useMutation } from "@tanstack/react-query";
+import HeroSkeleton from "../hero/hero-skeleton";
+import { useState } from "react";
+import ArchiveOverview from "./archive-overview";
 
-export function formatDBWeather(
-  data: WeatherRes[],
-  mode = "overview" as "overview" | "graph"
-) {
-  const getAvg = (key: string, arr = data as WeatherRes[]) => {
-    return Number(
-      // @ts-ignore
-      (arr.reduce((a, b) => a + Number(b[key]), 0) / arr.length).toFixed(1)
-    );
-  };
-  const getDayMap = () => {
-    const res: Record<string, WeatherRes[]> = {};
-
-    for (const d of data) {
-      const day = format(new Date(d.data), "yyyy-MM-dd");
-      if (!res[day]) res[day] = [];
-      res[day].push(d);
-    }
-    return res;
-  };
-
-  if (mode === "overview") {
-    const res: WeatherData[] = [
-      {
-        title: "Temperatura",
-        tabs: [
-          {
-            key: "Minima",
-            value: getAvg("lowTemp"),
-          },
-          {
-            key: "Media",
-            value: getAvg("tempOut"),
-          },
-          {
-            key: "Massima",
-            value: getAvg("hiTemp"),
-          },
-        ],
-        unit: "°C",
-      },
-      {
-        title: "Umidita'",
-        tabs: [
-          {
-            key: "Media",
-            value: getAvg("outHum"),
-          },
-        ],
-        unit: "%",
-      },
-      {
-        title: "Precipitazioni",
-        tabs: [
-          {
-            key: "Media",
-            value: getAvg("rain"),
-          },
-        ],
-        unit: "mm",
-      },
-      {
-        title: "Pressione",
-        tabs: [
-          {
-            key: "Media",
-            value: getAvg("bar"),
-          },
-        ],
-        unit: "hPa",
-      },
-    ];
-    return res;
-  }
-  if (mode === "graph") {
-    const days = getDayMap();
-    const keys = Object.keys(days);
-    const res: WeatherDataMonthly["graphs"] = [
-      {
-        name: "Temperatura",
-        data: keys.map((k) => getAvg("tempOut", days[k])),
-        unit: "°C",
-      },
-      {
-        name: "Umidità",
-        data: keys.map((k) => getAvg("outHum", days[k])),
-        unit: "%",
-      },
-      {
-        name: "Pressione",
-        data: keys.map((k) => getAvg("bar", days[k])),
-        unit: "hPa",
-      },
-      {
-        name: "Precipitazioni",
-        data: keys.map((k) => getAvg("rain", days[k])),
-        unit: "mm",
-      },
-    ];
-    return { graphs: res, days: keys };
-  }
-}
-
+/**
+ * Handles the form submission based on the selected day and mode.
+ * Generates form and result ui based on the selected mode and date.
+ */
 export function ArchiveForm() {
-  const [date, setDate] = React.useState<Date>();
-  const [mode, setMode] = React.useState<"day" | "month" | null>(null);
-  const [monthData, setMonthData] = React.useState<WeatherDataMonthly | null>(
-    null
-  );
-  const [dayData, setDayData] = React.useState<WeatherData[] | null>(null);
+  const [date, setDate] = useState<Date>(new Date());
+  const [mode, setMode] = useState<"day" | "month" | null>("month");
 
-  async function onSubmit(
-    day = date as Date | undefined,
-    currMode = mode as "day" | "month"
-  ) {
-    setMode(currMode);
-    setDate(day);
-    if (!day || !currMode) return;
-    if (currMode === "day") {
-      await fetch(`/api/day`, {
-        method: "POST",
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const options = {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          day: format(day, "yyyy-MM-dd"),
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setDayData(formatDBWeather(data) as WeatherData[]);
-          setMonthData(null);
-        });
-    }
-    if (currMode === "month") {
-      await fetch(`/api/month`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          day: format(day, "yyyy-MM-dd"),
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          const resOverview = formatDBWeather(data) as WeatherData[];
-          const resGraphs = formatDBWeather(data, "graph") as {
-            graphs: WeatherDataMonthly["graphs"];
-            days: string[];
-          };
-          setMonthData({
-            overview: resOverview,
-            graphs: resGraphs.graphs,
-            days: resGraphs.days,
-          });
-          setDayData(null);
-        });
-    }
-  }
+      };
+
+      const res = await (mode === "day"
+        ? fetch("url1", options)
+        : fetch("url2", options));
+
+      // TBD: get data type
+      const data = await res.json();
+
+      if (mode === "day") {
+        // format data proprerly
+        // ..
+      } else {
+        // format data proprerly
+        // ..
+      }
+
+      return data;
+    },
+  });
+
   return (
     <>
-      <div className="flex items-center justify-center gap-4">
+      <div className="mb-8 grid md:grid-cols-[2fr_1fr_0.2fr] gap-4 max-w-screen-md m-auto px-4 ">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
               className={cn(
-                "w-[280px] justify-start text-left font-normal rounded-3xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900/[0.5] dark:border-border/20 bg-white border border-zinc-200/50",
+                "w-[280px] col-span-2  md:col-span-1 m-auto justify-start text-left font-normal rounded-3xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900/[0.5] dark:border-border/20 bg-white border border-zinc-200/50",
                 !date && "text-muted-foreground "
               )}
             >
@@ -216,17 +88,22 @@ export function ArchiveForm() {
             <Calendar
               mode="single"
               selected={date}
-              onSelect={(day) => onSubmit(day)}
+              onSelect={(e) => setDate(e as Date)}
               initialFocus
             />
           </PopoverContent>
         </Popover>
 
         <Select
-          onValueChange={(value: "day" | "month") => onSubmit(date, value)}
+          defaultValue="month"
+          onValueChange={(value: "day" | "month") => setMode(value)}
         >
           <SelectTrigger className="w-[180px] rounded-3xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900/[0.5] dark:border-border/20 bg-white border border-zinc-200/50">
-            <SelectValue placeholder="Modalità" className="text-white" />
+            <SelectValue
+              placeholder="Modalità"
+              className="text-white"
+              aria-label="Seleziona una modalità"
+            />
             <p className="sr-only">Modalità di ricerca </p>
           </SelectTrigger>
           <SelectContent className="w-[180px] rounded-xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900 dark:border-border/20 bg-white border border-zinc-200/50 pb-3">
@@ -247,18 +124,20 @@ export function ArchiveForm() {
             </SelectGroup>
           </SelectContent>
         </Select>
+
         <Button
           className="border shadow-md rounded-2xl shadow-input dark:shadow-none dark:border-border/20 border-zinc-200/50"
-          onClick={() => onSubmit()}
+          onClick={() => mutation.mutate()}
         >
           <Search className="w-4 h-4" />
+          <p className="sr-only">Cerca</p>
         </Button>
       </div>
-      {date && monthData && mode === "month" && (
-        <ArchiveResMonthly data={monthData} />
-      )}
-      {date && dayData && mode === "day" && (
-        <ArchiveResDaily data={dayData} day={date} />
+
+      {mutation.isPending && <HeroSkeleton />}
+      {mutation.isError && <div>{JSON.stringify(mutation.error)}</div>}
+      {mutation.isSuccess && (
+        <ArchiveOverview {...mutation.data} lastUpdate={date} />
       )}
     </>
   );
