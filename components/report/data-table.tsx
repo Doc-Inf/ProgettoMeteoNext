@@ -7,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -19,6 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
+import { it } from "date-fns/locale";
+import { Button } from "../ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,7 +32,7 @@ export function ReportTable<TData, TValue>({
   columns,
   data,
   type,
-}: DataTableProps<TData, TValue> & { type: "month" | "year" }) {
+}: DataTableProps<TData, TValue> & { type: "day" | "month" | "year" }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -41,24 +44,29 @@ export function ReportTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       rowSelection,
       columnVisibility,
     },
   });
-  async function onSubmit() {}
+
   return (
     <>
-      <div className="md:px-10">
-        <Table className="md:w-full w-[562px] overflow-x-scroll">
+      <div className="px-4 md:px-10">
+        <Table className="md:w-full lg:w-[1200px]  md:overflow-x-hidden m-auto w-[562px] overflow-x-scroll ">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   if (header.id === "type")
                     return (
-                      <TableHead key={headerGroup.id}>
-                        {type === "month" ? "Mese" : "Anno"}
+                      <TableHead key={headerGroup.id} className="font-bold">
+                        {type === "month"
+                          ? "Mese"
+                          : type === "day"
+                          ? "Giorno"
+                          : "Anno"}
                       </TableHead>
                     );
                   return (
@@ -89,21 +97,35 @@ export function ReportTable<TData, TValue>({
                     return (
                       cell.column.columnDef.header !== "hide" && (
                         <TableCell key={cell.id}>
-                          {cell.column.id === "type"
-                            ? format(
+                          {cell.column.id === "type" ? (
+                            <span className="font-bold">
+                              {" "}
+                              {format(
                                 type === "month"
                                   ? new Date().setMonth(
                                       (cell.getValue() as number) - 1
                                     )
-                                  : new Date().setFullYear(
+                                  : type === "year"
+                                  ? new Date().setFullYear(
+                                      cell.getValue() as number
+                                    )
+                                  : new Date().setDate(
                                       cell.getValue() as number
                                     ),
-                                type == "month" ? "MMMM" : "yyyy"
-                              )
-                            : flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
+                                type == "month"
+                                  ? "MMMM"
+                                  : type === "day"
+                                  ? "dd"
+                                  : "yyyy",
+                                { locale: it }
+                              )}{" "}
+                            </span>
+                          ) : (
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )
+                          )}
                         </TableCell>
                       )
                     );
@@ -122,6 +144,25 @@ export function ReportTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+
+        <div className="flex 2xl:w-[1200px] items-center justify-end py-4 m-auto space-x-2 lg:w-full">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Precedente
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Prossima
+          </Button>
+        </div>
       </div>
     </>
   );

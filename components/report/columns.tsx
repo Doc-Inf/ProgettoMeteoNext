@@ -3,9 +3,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-
-import { format } from "date-fns";
-import { TableCell, TableRow } from "../ui/table";
 import TooltipHeader from "./tooltip-header";
 
 interface WeatherVals {
@@ -29,29 +26,29 @@ const hiddenCols = [
 
 const columnHelper = createColumnHelper<WeatherInfo>();
 export const columns: ColumnDef<WeatherInfo>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          (table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() &&
-              "indeterminate")) as CheckedState
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Seleziona una riga"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         (table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() &&
+  //             "indeterminate")) as CheckedState
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Seleziona una riga"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     id: "type",
     accessorKey: "id",
