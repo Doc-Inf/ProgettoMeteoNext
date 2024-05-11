@@ -29,6 +29,7 @@ export default function About() {
           className="m-auto w-[80%] lg:w-[40%] aspect-square"
           allowFullScreen={false}
           loading="lazy"
+          title="posizione scuola"
           referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>

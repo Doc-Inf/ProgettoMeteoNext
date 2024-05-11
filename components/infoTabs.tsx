@@ -65,6 +65,7 @@ export default function InfoTabs({
                       className={`w-4 h-4 rounded-full ${
                         tab.key === key && "bg-primary hover:bg-primary"
                       }`}
+                      aria-label={tab.key}
                     />
                   </TabsTrigger>
                 ))}

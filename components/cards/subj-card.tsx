@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 export default function SubjCard({
   title,
@@ -27,26 +28,28 @@ export default function SubjCard({
           {title}
         </CardTitle>
         {src && (
-          <div className="absolute top-0 border-2 rounded-full -translate-y-1/2 md:-translate-y-px md:static border-primary">
-            <img
+          <div className="absolute top-0 -translate-y-1/2 border-2 rounded-full md:-translate-y-px md:static border-primary">
+            <Image
               src={src}
+              width={0}
+              height={0}
+              objectFit="cover"
               className="p-0 m-0 rounded-full w-14 h-14 grayscale"
+              alt={title}
             />
           </div>
         )}
       </CardHeader>
       <CardDescription className="px-4 text-justify w-[95%] overflow-scroll h-[120px] lg:overflow-hidden lg:h-full">
-        <p
+        <span
           className={`leading-6 [&:not(:first-child)]:mt-6 ${
             src ? `text-pretty` : `text-center`
           } text-foreground/95`}
         >
           {par}
-        </p>
+        </span>
         {sub && (
-          <blockquote className="pl-6 mt-6 italic text-center">
-            {sub}
-          </blockquote>
+          <span className="block pl-6 mt-6 italic text-center">{sub}</span>
         )}
       </CardDescription>
     </Card>

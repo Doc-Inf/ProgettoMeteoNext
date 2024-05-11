@@ -1,10 +1,12 @@
+import Image from "next/image";
+
 export default function SchoolInfo() {
   return (
     <div className="flex flex-col xl:grid xl:grid-cols-2 xl:space-x-8">
       <h2 className="order-1 pb-6 text-4xl font-normal tracking-tight text-center md:text-6xl scroll-m-20 first:mt-0 xl:col-span-2">
         La nostra scuola
       </h2>
-      <h4 className="order-3 mt-6 mb-8 text-xl font-medium tracking-tight text-justify col-span-2 xl:order-2 lg:px-40 md:text-center scroll-m-20">
+      <h4 className="order-3 col-span-2 mt-6 mb-8 text-xl font-medium tracking-tight text-justify xl:order-2 lg:px-40 md:text-center scroll-m-20">
         La scuola viene istituita nell&lsquo; A. S. 1960 /61 come succursale
         dell&lsquo;I.T.I.S. &quot;E. Fermi&quot; di Roma all&lsquo;epoca
         esistevano solo tre sezioni: la sezione A di 37 alunni la sezione B di
@@ -56,13 +58,19 @@ export default function SchoolInfo() {
         </p>
       </div>
       <div className="flex flex-col self-center order-2 align-items-center *:m-auto space-y-8 xl:order-3">
-        <img
+        <Image
           src="https://statics.cedscdn.it/photos/MED_HIGH/47/45/5794745_1122_luciano_sciurba_1.jpg"
           className="rounded-sm shadow-md lg:w-8/12 shadow-primary"
+          width={0}
+          height={0}
+          alt="Giancarlo Vallauri Velletri"
         />
-        <img
+        <Image
           src="https://www.itisvallauri.net/meteo/img/scuola1.jpg"
           className="hidden w-6/12 rounded-sm shadow-md xl:block shadow-primary"
+          width={0}
+          height={0}
+          alt="Giancarlo Vallauri Velletri"
         />
       </div>
     </div>
