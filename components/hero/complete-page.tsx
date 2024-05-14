@@ -12,8 +12,14 @@ import { useQuery } from "@tanstack/react-query";
 import {
   type WeatherOverviewData,
   type WeatherGraphs,
+  RilevazioniGiornaliere,
 } from "@/constants/weather-types";
-import { getTabs, getDelta, getGraphs } from "@/constants/functions";
+import {
+  getTabs,
+  getDelta,
+  getGraphs,
+  getDailyGraphs,
+} from "@/constants/functions";
 
 const fetchWeather = async () => {
   const res = await fetch("api/db", {
@@ -52,7 +58,6 @@ export default function Home() {
       </>
     );
   }
-
   const todayData: WeatherOverviewData = {
     temp: getTabs(data, "temperatura"),
     humidity: getTabs(data, "umidita"),
@@ -61,7 +66,11 @@ export default function Home() {
     windSpeed: data.ultimaRilevazione.velocitaVentoUltimaRilevazione as number,
     rain: data.ultimaRilevazione.pioggiaGiornaliera,
     delta: getDelta(data),
+    daily: getDailyGraphs(
+      data.rilevazioniGiornaliere as RilevazioniGiornaliere[]
+    ),
   };
+
   const weekData: WeatherGraphs = {
     temp: getGraphs(data, "temperatura"),
     minTemp: getGraphs(data, "minTemperatura"),

@@ -39,38 +39,54 @@ const ArchiveOverview = ({
     <>
       <div className="px-4 mb-8 col-span-full">
         <Container>
-          <div className="relative w-full space-y-4 md:flex md:justify-between md:space-y-0 ">
-            <div className="flex items-center gap-2">
-              {weatherIcon}
-              <h4 className="text-lg font-normal tracking-tight scroll-m-20">
-                Il meteo è{" "}
-                <span className="font-semibold">{weather.toLowerCase()}</span>
-              </h4>
-            </div>
-            <Separator
-              orientation="vertical"
-              className="absolute hidden h-8 -translate-x-1/2 -translate-y-1/2 md:block bg-primary/20 left-1/2 top-1/2"
-            />
-            <Separator
-              orientation="horizontal"
-              className="block md:hidden absolute w-full -translate-x-1/2 -translate-y-1/2 bg-primary/20 left-1/2 top-1/2 !-mt-0"
-            />
-            <div className="flex items-center gap-2">
+          {monthData ? (
+            <div className="flex w-full justify-center items-center gap-2 text-center">
               <Clock className="text-primary" />
               <h4 className="font-normal tracking-tight text-md md:text-lg scroll-m-20">
                 {" "}
-                Rilevazione del:{" "}
+                Rilevazione del mese:{" "}
                 <span className="font-semibold">{lastUpdate}</span>
               </h4>
             </div>
-          </div>
+          ) : (
+            <div className="relative w-full space-y-4 md:flex md:justify-between md:space-y-0 ">
+              <div className="flex items-center gap-2">
+                {weatherIcon}
+                <h4 className="text-lg font-normal tracking-tight scroll-m-20">
+                  Il meteo è{" "}
+                  <span className="font-semibold">{weather.toLowerCase()}</span>
+                </h4>
+              </div>
+              <Separator
+                orientation="vertical"
+                className="absolute hidden h-8 -translate-x-1/2 -translate-y-1/2 md:block bg-primary/20 left-1/2 top-1/2"
+              />
+              <Separator
+                orientation="horizontal"
+                className="block md:hidden absolute w-full -translate-x-1/2 -translate-y-1/2 bg-primary/20 left-1/2 top-1/2 !-mt-0"
+              />
+              <div className="flex items-center gap-2">
+                <Clock className="text-primary" />
+                <h4 className="font-normal tracking-tight text-md md:text-lg scroll-m-20">
+                  {" "}
+                  Rilevazione del:{" "}
+                  <span className="font-semibold">{lastUpdate}</span>
+                </h4>
+              </div>
+            </div>
+          )}
         </Container>
       </div>
 
       <ContainerCols>
         {Object.keys(data).map((k, idx) => {
           const key = k as keyof WeatherOverviewData;
-          if (key === "delta" || key === "windDir" || key === "windSpeed")
+          if (
+            key === "delta" ||
+            key === "windDir" ||
+            key === "windSpeed" ||
+            key === "daily"
+          )
             return;
 
           const iconKey = (key[0].toUpperCase() +
@@ -86,7 +102,7 @@ const ArchiveOverview = ({
                 value={data[key]}
                 icon={<Weather.Rainy stroke="#17A34A" />}
                 unit={UNITMATCHER[key]}
-                subtitle="Pioggia del giorno"
+                subtitle="Pioggia totale mese"
               />
             );
 
@@ -97,7 +113,7 @@ const ArchiveOverview = ({
               tabs={data[key]}
               unit={UNITMATCHER[key]}
               icon={icon}
-              sub={data.delta[key].split(" ")[0] + " % dal giorno precedente"}
+              sub={data.delta[key]}
             />
           );
         })}

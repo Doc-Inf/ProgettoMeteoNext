@@ -25,6 +25,8 @@ import { useMutation } from "@tanstack/react-query";
 import HeroSkeleton from "../hero/hero-skeleton";
 import { useState } from "react";
 import ArchiveOverview from "./archive-overview";
+import { WeatherHistory, WeatherOverviewData } from "@/constants/weather-types";
+import { getMonthlyDelta, getMonthlyTabs } from "@/constants/functions";
 
 /**
  * Handles the form submission based on the selected day and mode.
@@ -45,17 +47,63 @@ export function ArchiveForm() {
 
       const res = await (mode === "day"
         ? fetch("url1", options)
-        : fetch("url2", options));
+        : fetch("api/storico", options));
 
       // TBD: get data type
-      const data = await res.json();
+      const data: WeatherHistory = await res.json();
 
       if (mode === "day") {
         // format data proprerly
         // ..
       } else {
-        // format data proprerly
-        // ..
+        const month = data.rilevazioniUltimi30Giorni;
+
+        const obj: {
+          data: WeatherOverviewData;
+          lastUpdate: string;
+          monthData?: {
+            graphs: {
+              temp: number[];
+              humidity: number[];
+              pressure: number[];
+              rain: number[];
+            };
+            days: string[];
+          };
+        } = {
+          data: {
+            temp: getMonthlyTabs(month, "Temperatura"),
+            humidity: getMonthlyTabs(month, "Umidita"),
+            pressure: getMonthlyTabs(month, "Pressione"),
+            rain: Number(
+              month
+                .map((x) => Number(x.pioggiaGiornaliera))
+                .reduce((sum, curr) => sum + curr, 0)
+                .toFixed(2)
+            ),
+            delta: {
+              temp: getMonthlyDelta(month, "Temperatura"),
+              humidity: getMonthlyDelta(month, "Umidita"),
+              pressure: getMonthlyDelta(month, "Pressione"),
+              rain: getMonthlyDelta(month, "pioggiaGiornaliera"),
+            },
+          },
+          lastUpdate:
+            format(month[0].data, "dd/MM") +
+            " - " +
+            format(month.at(-1)!.data, "dd/MM"),
+          monthData: {
+            graphs: {
+              temp: month.map((x) => Number(x.mediaTemperatura)),
+              humidity: month.map((x) => Number(x.mediaUmidita)),
+              pressure: month.map((x) => Number(x.mediaPressione)),
+              rain: month.map((x) => Number(x.pioggiaGiornaliera)),
+            },
+            days: month.map((x) => format(x.data, "dd/MM")),
+          },
+        };
+
+        return obj;
       }
 
       return data;
@@ -64,7 +112,7 @@ export function ArchiveForm() {
 
   return (
     <>
-      <div className="mb-8 grid md:grid-cols-[2fr_1fr_0.2fr] gap-4 max-w-screen-md m-auto px-4 ">
+      <div className="mb-32 grid md:grid-cols-[2fr_1fr_0.2fr] gap-4 max-w-screen-md m-auto px-4 ">
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -136,9 +184,7 @@ export function ArchiveForm() {
 
       {mutation.isPending && <HeroSkeleton />}
       {mutation.isError && <div>{JSON.stringify(mutation.error)}</div>}
-      {mutation.isSuccess && (
-        <ArchiveOverview {...mutation.data} lastUpdate={date} />
-      )}
+      {mutation.isSuccess && <ArchiveOverview {...mutation.data} />}
     </>
   );
 }

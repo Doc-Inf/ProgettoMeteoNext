@@ -28,6 +28,9 @@ export interface WeatherOverviewData {
   windDir: string;
   windSpeed: number;
   pressure: Tab[];
+  daily?: WeatherGraphs & {
+    times: Array<string>;
+  };
   delta: {
     temp: string;
     humidity: string;
@@ -228,4 +231,60 @@ export interface DBArrays {
 export interface DBResult extends DBArrays {
   ultimaRilevazione: Rilevazione;
   rilevazioneGiornoPrimaUltima: Rilevazione;
+  rilevazioniGiornaliere: RilevazioniGiornaliere[];
+}
+
+export type RilevazioniGiornaliere = {
+  id: number;
+  data: string;
+  tempOut: string;
+  hiTemp: string;
+  lowTemp: string;
+  outHum: number;
+  devPt: string;
+  windSpeed: string;
+  windDir: string;
+  windRun: string;
+  hiSpeed: string;
+  hiDir: string;
+  chillWind: string;
+  heatIndex: string;
+  thwIndex: string;
+  bar: string;
+  rain: string;
+  rainRate: string;
+  heatDD: string;
+  coolDD: string;
+  inTemp: string;
+  inHum: number;
+  inDew: string;
+  inHeat: string;
+  inEMC: string;
+  inAirDensity: string;
+  windSamp: number;
+  windTx: number;
+  issRecept: string;
+  arcInt: number;
+};
+
+export type RilevazioneMese = {
+  data: string;
+  maxTemperatura: string;
+  minTemperatura: string;
+  mediaTemperatura: string;
+  maxUmidita: number;
+  minUmidita: number;
+  mediaUmidita: string;
+  maxPressione: string;
+  minPressione: string;
+  mediaPressione: string;
+  maxVelocitaVento: string;
+  minVelocitaVento: string;
+  mediaVelocitaVento: string;
+  pioggiaGiornaliera: string;
+};
+
+export interface WeatherHistory {
+  rilevazioniGiornaliere: RilevazioniGiornaliere[];
+  rilevazioniUltimi30Giorni: RilevazioneMese[];
 }

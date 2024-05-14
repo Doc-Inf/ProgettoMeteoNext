@@ -77,7 +77,12 @@ const HeroOverview = forwardRef<
         <ContainerCols>
           {Object.keys(data).map((k, idx) => {
             const key = k as keyof WeatherOverviewData;
-            if (key === "delta" || key === "windDir" || key === "windSpeed")
+            if (
+              key === "delta" ||
+              key === "windDir" ||
+              key === "windSpeed" ||
+              key === "daily"
+            )
               return;
 
             const iconKey = (key[0].toUpperCase() +
@@ -123,26 +128,15 @@ const HeroOverview = forwardRef<
           <CollapsibleContent>
             <ContainerCols className="grid-cols-1  md:!grid-cols-5">
               <div className="col-span-3 *:mt-0 *:h-full row-span-2">
-                <HeroGraphs
-                  title="giornata"
-                  inViewLoad={false}
-                  // UPDATE THIS !!!
-                  graphs={{
-                    temp: Object.values(data.temp).map((v) => v.value),
-                    humidity: Object.values(data.humidity).map((v) => v.value),
-                    pressure: Object.values(data.pressure).map((v) => v.value),
-                    rain: [data.rain],
-                  }}
-                  days={[
-                    "3:00",
-                    "6:00",
-                    "9:00",
-                    "12:00",
-                    "15:00",
-                    "18:00",
-                    "21:00",
-                  ]}
-                />
+                {data.daily && (
+                  <HeroGraphs
+                    title="giornata"
+                    inViewLoad={false}
+                    graphs={data.daily}
+                    lessX={true}
+                    days={data.daily.times}
+                  />
+                )}
               </div>
 
               {["windDir", "windSpeed"].map((k, idx) => {

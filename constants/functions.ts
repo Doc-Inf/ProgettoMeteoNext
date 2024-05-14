@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import {
   type DBArrays,
   type DBResult,
@@ -5,6 +6,9 @@ import {
   type Rilevazione,
   type Tab,
   type WeatherOverviewData,
+  WeatherHistory,
+  RilevazioneMese,
+  TITLEMATCHER,
 } from "./weather-types";
 
 /**
@@ -101,4 +105,64 @@ export function getGraphs(data: DBResult, key: string): number[] {
       x !== null ? Number(x.replaceAll(",", "")) : 0
     );
   return data[k].map((x: string | null) => (x !== null ? Number(x) : 0));
+}
+
+export function getDailyGraphs(
+  data: DBResult["rilevazioniGiornaliere"]
+): WeatherOverviewData["daily"] {
+  return {
+    temp: data.map((x) => Number(x.tempOut)),
+    humidity: data.map((x) => Number(x.outHum)),
+    rain: data.map((x) => Number(x.rain)),
+    pressure: data.map((x) => Number(x.bar)),
+    maxTemp: data.map((x) => Number(x.hiTemp)),
+    minTemp: data.map((x) => Number(x.lowTemp)),
+    times: data.map((x) => format(x.data, "HH:mm")),
+  };
+}
+
+export function getMonthlyTabs(
+  data: WeatherHistory["rilevazioniUltimi30Giorni"],
+  key: string
+): Tab[] {
+  const min = ("min" + key) as keyof RilevazioneMese;
+  const max = ("max" + key) as keyof RilevazioneMese;
+  const avg = ("media" + key) as keyof RilevazioneMese;
+  return [
+    {
+      key: "Attuale",
+      value: Number(
+        (
+          data
+            .map((x) => Number(x[avg]))
+            .reduce((total, num) => total + num, 0) / data.length
+        ).toFixed(1)
+      ),
+    },
+    {
+      key: "Massima",
+      value: Math.max(...data.map((x) => Number(x[max]))),
+    },
+    {
+      key: "Minima",
+      value: Math.min(...data.map((x) => Number(x[min]))),
+    },
+  ];
+}
+
+export function getMonthlyDelta(
+  data: WeatherHistory["rilevazioniUltimi30Giorni"],
+  key: string
+): string {
+  const avg =
+    key === "pioggiaGiornaliera"
+      ? "pioggiaGiornaliera"
+      : (("media" + key) as keyof RilevazioneMese);
+  const arr = data.map((x) => Number(x[avg]));
+
+  const max = Math.max(...arr);
+  const delta = Number((((max - Math.min(...arr)) / max) * 100).toFixed(1));
+  const res = delta < 0 ? "-" + delta : "+" + delta + " % tra massimo e minimo";
+
+  return res;
 }
