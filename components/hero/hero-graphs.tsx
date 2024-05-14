@@ -12,6 +12,7 @@ export default function HeroGraphs({
   days,
   title,
   inViewLoad = true,
+  lessX,
 }: {
   graphs: {
     temp: number[];
@@ -21,6 +22,7 @@ export default function HeroGraphs({
   };
   days: string[];
   title: "giornata" | "settimana" | "mese";
+  lessX?: boolean;
   inViewLoad?: boolean;
 }) {
   // load graph only when in view
@@ -49,6 +51,7 @@ export default function HeroGraphs({
             IsInView={inViewLoad ? IsInViewGraph : true}
             name="temperatura"
             data={graphs.temp}
+            lessX={lessX}
             days={days}
             unit="°C"
           />
@@ -61,6 +64,7 @@ export default function HeroGraphs({
             data={graphs.humidity}
             days={days}
             unit="%"
+            lessX={lessX}
           />
         </TabsContent>
         <TabsContent value="pressure">
@@ -71,6 +75,7 @@ export default function HeroGraphs({
             data={graphs.pressure}
             days={days}
             unit="hPa"
+            lessX={lessX}
           />
         </TabsContent>
         <TabsContent value="rain">
@@ -81,6 +86,7 @@ export default function HeroGraphs({
             data={graphs.rain}
             days={days}
             unit="mm"
+            lessX={lessX}
           />
         </TabsContent>
       </Tabs>

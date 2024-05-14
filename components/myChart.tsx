@@ -10,12 +10,14 @@ export default function MyChart({
   unit,
   name,
   days,
+  lessX,
 }: {
   IsInView?: boolean;
   data: number[];
   unit: string;
   name: string;
   days?: string[];
+  lessX?: boolean;
 }) {
   // get theme
   const { theme } = useTheme();
@@ -76,6 +78,9 @@ export default function MyChart({
         "26/01",
         "27/01",
       ],
+
+      tickAmount: lessX ? 4 : 8,
+      tickPlacement: "between",
     },
     yaxis: {
       labels: {
@@ -135,23 +140,25 @@ export default function MyChart({
   }, [theme]);
 
   useEffect(() => {
-    if (days && days?.length > 5) {
+    if (
+      windowSize.width &&
+      windowSize.width < 468 &&
+      days &&
+      days?.length > 5
+    ) {
       setOptions((prev) => {
-        const newCategories =
-          windowSize.width && windowSize.width > 468
-            ? days ?? []
-            : days?.filter((_, idx) => idx % 3 === 0) ?? [];
         return {
           ...prev,
           xaxis: {
             ...prev.xaxis,
-            overwriteCategories: newCategories,
+            tickAmount: 4,
           },
         };
       });
     }
   }, [windowSize, days]);
 
+  console.log(name, options.xaxis?.tickAmount);
   return (
     // load only when in view
     IsInView && (

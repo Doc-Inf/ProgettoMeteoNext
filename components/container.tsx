@@ -12,7 +12,7 @@ export function ContainerCols({
     <div
       className={cn(
         className,
-        "px-5 m-auto grid max-w-screen-md gap-4 lg:max-w-screen-lg md:grid-cols-2 lg:px-0"
+        "px-5 m-auto grid max-w-screen-md gap-4 lg:max-w-screen-lg md:grid-cols-2 md:px-0"
       )}
     >
       {children}
