@@ -47,7 +47,7 @@ export function ArchiveForm() {
 
       const res = await (mode === "day"
         ? fetch("url1", options)
-        : fetch("api/storico", options));
+        : fetch("./php/datiStorico.php", options));
 
       // TBD: get data type
       const data: WeatherHistory = await res.json();
@@ -81,6 +81,8 @@ export function ArchiveForm() {
                 .reduce((sum, curr) => sum + curr, 0)
                 .toFixed(2)
             ),
+            // TEMP SOLUTION, TODO: FIX
+            // @ts-ignore
             delta: {
               temp: getMonthlyDelta(month, "Temperatura"),
               humidity: getMonthlyDelta(month, "Umidita"),
@@ -184,6 +186,7 @@ export function ArchiveForm() {
 
       {mutation.isPending && <HeroSkeleton />}
       {mutation.isError && <div>{JSON.stringify(mutation.error)}</div>}
+      {/* @ts-ignore  TEMP FIX, TODO: VALID TYPES*/}
       {mutation.isSuccess && <ArchiveOverview {...mutation.data} />}
     </>
   );

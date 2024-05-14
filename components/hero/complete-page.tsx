@@ -22,7 +22,7 @@ import {
 } from "@/constants/functions";
 
 const fetchWeather = async () => {
-  const res = await fetch("api/db", {
+  const res = await fetch("./php/datiHome.php", {
     method: "GET",
     //revalidate every 5 minutes
     next: { revalidate: 300 },
