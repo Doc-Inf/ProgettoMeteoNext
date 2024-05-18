@@ -23,10 +23,15 @@ import {
 } from "../ui/select";
 import { useMutation } from "@tanstack/react-query";
 import HeroSkeleton from "../hero/hero-skeleton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArchiveOverview from "./archive-overview";
 import { WeatherHistory, WeatherOverviewData } from "@/constants/weather-types";
-import { getMonthlyDelta, getMonthlyTabs } from "@/constants/functions";
+import {
+  getArchiveDaily,
+  getDailyGraphs,
+  getMonthlyDelta,
+  getMonthlyTabs,
+} from "@/constants/functions";
 
 /**
  * Handles the form submission based on the selected day and mode.
@@ -38,39 +43,31 @@ export function ArchiveForm() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const options = {
+      const options: RequestInit = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       };
 
-      const res = await (mode === "day"
-        ? fetch("url1", options)
-        : fetch("./php/datiStorico.php", options));
+      const res = await fetch(
+        `api/storico?giorno=${format(date, "yyyy-MM-dd")}`,
+        options
+      );
 
-      // TBD: get data type
       const data: WeatherHistory = await res.json();
 
       if (mode === "day") {
-        // format data proprerly
-        // ..
+        const day = data.rilevazioniGiornaliere;
+        const obj = {
+          lastUpdate: day.at(-1)!.data,
+          data: getArchiveDaily(day, getDailyGraphs(day)),
+        };
+        return obj;
       } else {
         const month = data.rilevazioniUltimi30Giorni;
 
-        const obj: {
-          data: WeatherOverviewData;
-          lastUpdate: string;
-          monthData?: {
-            graphs: {
-              temp: number[];
-              humidity: number[];
-              pressure: number[];
-              rain: number[];
-            };
-            days: string[];
-          };
-        } = {
+        const obj = {
           data: {
             temp: getMonthlyTabs(month, "Temperatura"),
             humidity: getMonthlyTabs(month, "Umidita"),
@@ -90,15 +87,61 @@ export function ArchiveForm() {
               rain: getMonthlyDelta(month, "pioggiaGiornaliera"),
             },
           },
-          lastUpdate:
-            format(month[0].data, "dd/MM") +
-            " - " +
-            format(month.at(-1)!.data, "dd/MM"),
+          // separator that won't be used in data formats in db
+          lastUpdate: month[0].data + "«" + month.at(-1)!.data,
           monthData: {
             graphs: {
-              temp: month.map((x) => Number(x.mediaTemperatura)),
-              humidity: month.map((x) => Number(x.mediaUmidita)),
-              pressure: month.map((x) => Number(x.mediaPressione)),
+              temp: [
+                {
+                  name: "max",
+                  color: "#f87171",
+                  data: month.map((x) => Number(x.maxTemperatura)),
+                },
+                {
+                  name: "med",
+                  color: "#17A34A",
+                  data: month.map((x) => Number(x.temperaturaMedia)),
+                },
+                {
+                  name: "min",
+                  color: "#22d3ee",
+                  data: month.map((x) => Number(x.minTemperatura)),
+                },
+              ],
+              humidity: [
+                {
+                  name: "max",
+                  color: "#f87171",
+                  data: month.map((x) => Number(x.maxUmidita)),
+                },
+                {
+                  name: "med",
+                  color: "#17A34A",
+                  data: month.map((x) => Number(x.umiditaMedia)),
+                },
+                {
+                  name: "min",
+                  color: "#22d3ee",
+                  data: month.map((x) => Number(x.minUmidita)),
+                },
+              ],
+              pressure: [
+                {
+                  name: "max",
+                  color: "#f87171",
+                  data: month.map((x) => Number(x.maxPressione)),
+                },
+                {
+                  name: "med",
+                  color: "#17A34A",
+                  data: month.map((x) => Number(x.pressioneMedia)),
+                },
+                {
+                  name: "min",
+                  color: "#22d3ee",
+                  data: month.map((x) => Number(x.minPressione)),
+                },
+              ],
               rain: month.map((x) => Number(x.pioggiaGiornaliera)),
             },
             days: month.map((x) => format(x.data, "dd/MM")),
@@ -107,10 +150,12 @@ export function ArchiveForm() {
 
         return obj;
       }
-
-      return data;
     },
   });
+
+  useEffect(() => {
+    if (!mutation.data) mutation.mutate();
+  }, []);
 
   return (
     <>
