@@ -1,3 +1,10 @@
+import type {
+  RilevazioneAnno,
+  RilevazioneMese,
+  RilevazionePerMese,
+  RilevazioniGiornaliere,
+} from "./measurement-types";
+
 /**
  * An interface that describes a tab in the weather overview
  *
@@ -20,6 +27,7 @@ export type Tab = { key: "Attuale" | "Massima" | "Minima"; value: number };
  * @property {string} delta.humidity - the difference in humidity
  * @property {string} delta.rain - the difference in rainfall
  * @property {string} delta.pressure - the difference in pressure
+ * @property {WeatherGraphs & { times: Array<string> }} daily - the weather data for the daily graph
  */
 export interface WeatherOverviewData {
   temp: Tab[];
@@ -39,6 +47,60 @@ export interface WeatherOverviewData {
     windSpeed: string;
     windDir: string;
   };
+}
+
+/**
+ * Interface that represents the weather data for graphs.
+ * It contains the necessary data to generate the graphs in the UI.
+ *
+ * @property {number[]} temp - array of temperature values
+ * @property {number[]} humidity - array of humidity values
+ * @property {number[]} rain - array of rainfall values
+ * @property {number[]} pressure - array of pressure values
+ * @property {number[]} minTemp - array of minimum temperature values
+ * @property {number[]} maxTemp - array of maximum temperature values
+ * @property {number[]} minHumidity - array of minimum humidity values
+ * @property {number[]} maxHumidity - array of maximum humidity values
+ * @property {number[]} minPressure - array of minimum pressure values
+ * @property {number[]} maxPressure - array of maximum pressure values
+ */
+export interface WeatherGraphs {
+  temp: number[];
+  humidity: number[];
+  rain: number[];
+  pressure: number[];
+  minTemp: number[];
+  maxTemp: number[];
+  minHumidity: number[];
+  maxHumidity: number[];
+  minPressure: number[];
+  maxPressure: number[];
+}
+
+/**
+ * Interface that represents the weather history data.
+ * It contains the necessary data to generate the weather history page.
+ *
+ * @property {RilevazioniGiornaliere[]} rilevazioniGiornaliere - array of RilevazioneGiornaliere objects
+ * @property {RilevazioneMese[]} rilevazioniUltimi30Giorni - array of RilevazioneMese objects
+ */
+export interface WeatherHistory {
+  rilevazioniGiornaliere: RilevazioniGiornaliere[];
+  rilevazioniUltimi30Giorni: RilevazioneMese[];
+}
+
+/**
+ * Interface that represents the weather archive data.
+ * It contains the necessary data to generate the weather archive page.
+ *
+ * @property {RilevazioneAnno[]} reportAnnuale - array of RilevazioneAnno objects
+ * @property {RilevazionePerMese[]} rilevazioniAnnualiPerMese - array of RilevazionePerMese objects
+ * @property {RilevazioneMese[]} rilevazioniMese - array of RilevazioneMese objects
+ */
+export interface WeatherArchive {
+  reportAnnuale: RilevazioneAnno[];
+  rilevazioniAnnualiPerMese: RilevazionePerMese[];
+  rilevazioniMese: RilevazioneMese[];
 }
 
 /**
@@ -97,194 +159,3 @@ export const UNITMATCHER: Record<keyof WeatherOverviewData["delta"], string> = {
   windSpeed: "km/h",
   windDir: "",
 } as const;
-
-/**
- * Interface that represents the weather data for graphs.
- * It contains the necessary data to generate the graphs in the UI.
- *
- * @property {number[]} temp - array of temperature values
- * @property {number[]} humidity - array of humidity values
- * @property {number[]} rain - array of rainfall values
- * @property {number[]} pressure - array of pressure values
- * @property {number[]} minTemp - array of minimum temperature values
- * @property {number[]} maxTemp - array of maximum temperature values
- */
-export interface WeatherGraphs {
-  temp: number[];
-  humidity: number[];
-  rain: number[];
-  pressure: number[];
-  minTemp: number[];
-  maxTemp: number[];
-}
-
-// temp type for fixed length
-type ArrayLengthMutationKeys = "splice" | "push" | "pop" | "shift" | "unshift";
-type FixedLengthArray<T, L extends number, TObj = [T, ...Array<T>]> = Pick<
-  TObj,
-  Exclude<keyof TObj, ArrayLengthMutationKeys>
-> & {
-  readonly length: L;
-  [I: number]: T;
-  [Symbol.iterator]: () => IterableIterator<T>;
-};
-
-/**
- * Represents a weather observation.
- *
- * @property {string} dataOraUltimaRilevazione - the date and time of the last observation
- * @property {string} temperaturaUltimaRilevazione - the temperature at the last observation
- * @property {number} umiditaUltimaRilevazione - the humidity at the last observation
- * @property {string} pressioneUltimaRilevazione - the pressure at the last observation
- * @property {string} direzioneVentoUltimaRilevazione - the wind direction at the last observation
- * @property {string} velocitaVentoUltimaRilevazione - the wind speed at the last observation
- * @property {string} data - the date of the observation
- * @property {string} maxTemperatura - the maximum temperature for the day
- * @property {string} oraMaxTemperatura - the time of the maximum temperature
- * @property {string} minTemperatura - the minimum temperature for the day
- * @property {string} oraMinTemperatura - the time of the minimum temperature
- * @property {string} temperaturaMedia - the average temperature for the day
- * @property {number} maxUmidita - the maximum humidity for the day
- * @property {string} oraMaxUmidita - the time of the maximum humidity
- * @property {number} minUmidita - the minimum humidity for the day
- * @property {string} oraMinUmidita - the time of the minimum humidity
- * @property {string} umiditaMedia - the average humidity for the day
- * @property {string} maxPressione - the maximum pressure for the day
- * @property {string} oraMaxPressione - the time of the maximum pressure
- * @property {string} minPressione - the minimum pressure for the day
- * @property {string} oraMinPressione - the time of the minimum pressure
- * @property {string} pressioneMedia - the average pressure for the day
- * @property {string} maxVelocitaVento - the maximum wind speed for the day
- * @property {string} oraMaxVelocitaVento - the time of the maximum wind speed
- * @property {string} minVelocitaVento - the minimum wind speed for the day
- * @property {string} oraMinVelocitaVento - the time of the minimum wind speed
- * @property {string} mediaVelocitaVento - the average wind speed for the day
- * @property {string} direzioneMaxVento - the direction of the maximum wind speed
- */
-export type Rilevazione = {
-  dataOraUltimaRilevazione: string;
-  temperaturaUltimaRilevazione: string;
-  umiditaUltimaRilevazione: number;
-  pressioneUltimaRilevazione: string;
-  direzioneVentoUltimaRilevazione: string;
-  velocitaVentoUltimaRilevazione: string;
-  data: string;
-  maxTemperatura: string;
-  oraMaxTemperatura: string;
-  minTemperatura: string;
-  oraMinTemperatura: string;
-  temperaturaMedia: string;
-  maxUmidita: number;
-  oraMaxUmidita: string;
-  minUmidita: number;
-  oraMinUmidita: string;
-  umiditaMedia: string;
-  maxPressione: string;
-  oraMaxPressione: string;
-  minPressione: string;
-  oraMinPressione: string;
-  pressioneMedia: string;
-  maxVelocitaVento: string;
-  oraMaxVelocitaVento: string;
-  minVelocitaVento: string;
-  oraMinVelocitaVento: string;
-  mediaVelocitaVento: string;
-  direzioneMaxVento: string;
-  pioggiaGiornaliera: string;
-};
-
-/**
- * Represents an object containing arrays of weather data for the current week.
- * Each property is an array of length 7, where the first element is the data
- * for the current day and the last element is the data for the day a week ago.
- * @interface DBArrays
- * @property {string[]} giorniSettimanaCorrente - the names of the days of the week
- * @property {string[]} temperaturaSettimanale - the temperatures for each day of the week
- * @property {number[]} umiditaSettimanale - the humidities for each day of the week
- * @property {string[]} pressioneSettimanale - the pressures for each day of the week
- * @property {string[]} pioggiaSettimanale - the rainfalls for each day of the week
- * @property {string[]} maxTemperaturaSettimanale - the maximum temperatures for each day of the week
- * @property {string[]} minTemperaturaSettimanale - the minimum temperatures for each day of the week
- * @property {string[]} maxPressioneSettimanale - the maximum pressures for each day of the week
- * @property {string[]} minPressioneSettimanale - the minimum pressures for each day of the week
- */
-export interface DBArrays {
-  giorniSettimanaCorrente: FixedLengthArray<string, 7>;
-  temperaturaSettimanale: FixedLengthArray<string, 7>;
-  umiditaSettimanale: FixedLengthArray<string, 7>;
-  pressioneSettimanale: FixedLengthArray<string, 7>;
-  pioggiaSettimanale: FixedLengthArray<string, 7>;
-  maxTemperaturaSettimanale: FixedLengthArray<string, 7>;
-  minTemperaturaSettimanale: FixedLengthArray<string, 7>;
-  maxPressioneSettimanale: FixedLengthArray<string, 7>;
-  minPressioneSettimanale: FixedLengthArray<string, 7>;
-}
-
-/**
- * Represents an object containing arrays of weather data for the current week and
- * weather observations of the current day and the day before.
- * @interface DBResult
- * @extends DBArrays
- * @property {Rilevazione} ultimaRilevazione - the last recorded weather data
- * @property {Rilevazione} rilevazioneGiornoPrimaUltima - the weather data from the day before the last recorded data
- */
-export interface DBResult extends DBArrays {
-  ultimaRilevazione: Rilevazione;
-  rilevazioneGiornoPrimaUltima: Rilevazione;
-  rilevazioniGiornaliere: RilevazioniGiornaliere[];
-}
-
-export type RilevazioniGiornaliere = {
-  id: number;
-  data: string;
-  tempOut: string;
-  hiTemp: string;
-  lowTemp: string;
-  outHum: number;
-  devPt: string;
-  windSpeed: string;
-  windDir: string;
-  windRun: string;
-  hiSpeed: string;
-  hiDir: string;
-  chillWind: string;
-  heatIndex: string;
-  thwIndex: string;
-  bar: string;
-  rain: string;
-  rainRate: string;
-  heatDD: string;
-  coolDD: string;
-  inTemp: string;
-  inHum: number;
-  inDew: string;
-  inHeat: string;
-  inEMC: string;
-  inAirDensity: string;
-  windSamp: number;
-  windTx: number;
-  issRecept: string;
-  arcInt: number;
-};
-
-export type RilevazioneMese = {
-  data: string;
-  maxTemperatura: string;
-  minTemperatura: string;
-  mediaTemperatura: string;
-  maxUmidita: number;
-  minUmidita: number;
-  mediaUmidita: string;
-  maxPressione: string;
-  minPressione: string;
-  mediaPressione: string;
-  maxVelocitaVento: string;
-  minVelocitaVento: string;
-  mediaVelocitaVento: string;
-  pioggiaGiornaliera: string;
-};
-
-export interface WeatherHistory {
-  rilevazioniGiornaliere: RilevazioniGiornaliere[];
-  rilevazioniUltimi30Giorni: RilevazioneMese[];
-}

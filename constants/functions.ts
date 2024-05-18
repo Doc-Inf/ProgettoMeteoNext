@@ -1,15 +1,12 @@
 import { format } from "date-fns";
 import {
-  type DBArrays,
-  type DBResult,
-  KEYMATCHER,
-  type Rilevazione,
   type Tab,
   type WeatherOverviewData,
-  WeatherHistory,
-  RilevazioneMese,
-  TITLEMATCHER,
+  type WeatherHistory,
+  KEYMATCHER,
 } from "./weather-types";
+import { DBArrays, DBResult } from "./db-types";
+import { Rilevazione, RilevazioneMese } from "./measurement-types";
 
 /**
  * Calculates the difference between the current weather data and the previous day's data.
@@ -107,6 +104,12 @@ export function getGraphs(data: DBResult, key: string): number[] {
   return data[k].map((x: string | null) => (x !== null ? Number(x) : 0));
 }
 
+/**
+ * Returns an object containing daily graph weather data for a given set of daily weather observations.
+ *
+ * @param {DBResult["rilevazioniGiornaliere"]} data - An array of daily weather observations.
+ * @return {WeatherOverviewData["daily"]} An object containing daily weather data, including temperature, humidity, rain, pressure, maximum and minimum temperature, and times.
+ */
 export function getDailyGraphs(
   data: DBResult["rilevazioniGiornaliere"]
 ): WeatherOverviewData["daily"] {
@@ -117,17 +120,159 @@ export function getDailyGraphs(
     pressure: data.map((x) => Number(x.bar)),
     maxTemp: data.map((x) => Number(x.hiTemp)),
     minTemp: data.map((x) => Number(x.lowTemp)),
+    // unused, kept for compatibility with types
+    maxHumidity: [0],
+    minHumidity: [0],
+    maxPressure: [0],
+    minPressure: [0],
     times: data.map((x) => format(x.data, "HH:mm")),
   };
 }
 
+/**
+ * Returns an object containing daily weather data for a given set of daily weather observations.
+ * Requires daily graphs to avoid redundant calculations.
+ *
+ * @param {WeatherHistory["rilevazioniGiornaliere"]} data - An array of daily weather observations.
+ * @param {ReturnType<typeof getDailyGraphs>} daily - An object containing daily weather data, including temperature, humidity, rain, pressure, maximum and minimum temperature, and times.
+ * @return {WeatherOverviewData} An object containing daily weather data, including temperature, humidity, rain, pressure, maximum and minimum temperature, and times.
+ */
+export function getArchiveDaily(
+  data: WeatherHistory["rilevazioniGiornaliere"],
+  daily: ReturnType<typeof getDailyGraphs>
+): WeatherOverviewData {
+  const windFreq = new Map();
+
+  const tempObj = {
+    temp: {
+      max: 0,
+      min: Infinity,
+      avg: 0,
+    },
+    humidity: {
+      max: 0,
+      min: Infinity,
+      avg: 0,
+    },
+    pressure: {
+      max: 0,
+      min: Infinity,
+      avg: 0,
+    },
+    rain: 0,
+    windSpeed: 0,
+  };
+
+  // get a counter of each wind direction
+  // and max, min and sums for efficiency
+  data.forEach((x) => {
+    const dir = x.windDir;
+    windFreq.set(dir, (windFreq.get(dir) || 0) + 1);
+    tempObj.temp.max = Math.max(tempObj.temp.max, Number(x.tempOut));
+    tempObj.temp.min = Math.min(tempObj.temp.min, Number(x.tempOut));
+    tempObj.temp.avg += Number(x.tempOut);
+    tempObj.humidity.max = Math.max(tempObj.humidity.max, Number(x.outHum));
+    tempObj.humidity.min = Math.min(tempObj.humidity.min, Number(x.outHum));
+    tempObj.humidity.avg += Number(x.outHum);
+    tempObj.pressure.max = Math.max(tempObj.pressure.max, Number(x.bar));
+    tempObj.pressure.min = Math.min(tempObj.pressure.min, Number(x.bar));
+    tempObj.pressure.avg += Number(x.bar);
+    tempObj.rain += Number(x.rain);
+    tempObj.windSpeed += Number(x.windSpeed);
+  });
+
+  // reduce to most frequent wind
+  const mostFreqWind = [...windFreq.entries()].reduce((a, b) =>
+    a[1] > b[1] ? a : b
+  );
+
+  return {
+    temp: [
+      {
+        key: "Attuale",
+        value: Number((tempObj.temp.avg / data.length).toFixed(1)),
+      },
+      {
+        key: "Massima",
+        value: tempObj.temp.max,
+      },
+      {
+        key: "Minima",
+        value: tempObj.temp.min,
+      },
+    ],
+    humidity: [
+      {
+        key: "Attuale",
+        value: Number((tempObj.humidity.avg / data.length).toFixed(1)),
+      },
+      {
+        key: "Massima",
+        value: tempObj.humidity.max,
+      },
+      {
+        key: "Minima",
+        value: tempObj.humidity.min,
+      },
+    ],
+    pressure: [
+      {
+        key: "Attuale",
+        value: Number((tempObj.pressure.avg / data.length).toFixed(1)),
+      },
+      {
+        key: "Massima",
+        value: tempObj.pressure.max,
+      },
+      {
+        key: "Minima",
+        value: tempObj.pressure.min,
+      },
+    ],
+    rain: Number(tempObj.rain.toFixed(1)),
+    windDir: mostFreqWind[0],
+    windSpeed: Number((tempObj.windSpeed / data.length).toFixed(1)),
+    daily,
+    delta: {
+      temp:
+        (
+          ((tempObj.temp.max - tempObj.temp.min) / tempObj.temp.min) *
+          100
+        ).toFixed(1) + "% tra massimo e minimo",
+      humidity:
+        (
+          ((tempObj.humidity.max - tempObj.humidity.min) /
+            tempObj.humidity.min) *
+          100
+        ).toFixed(1) + "% tra massimo e minimo",
+      rain: (((tempObj.rain - tempObj.rain) / tempObj.rain) * 100).toFixed(1),
+      pressure:
+        (
+          ((tempObj.pressure.max - tempObj.pressure.min) /
+            tempObj.pressure.min) *
+          100
+        ).toFixed(1) + "% tra massimo e minimo",
+      windSpeed: "Informazioni vento del giorno",
+      windDir: "Informazioni vento del giorno",
+    },
+  };
+}
+
+/**
+ * Returns an array of tabs containing the current average, maximum, and minimum values of a given key from a list of weather history data.
+ *
+ * @param {WeatherHistory["rilevazioniUltimi30Giorni"]} data - The list of weather history data.
+ * @param {string} key - The key to calculate the average, maximum, and minimum values for.
+ * @return {Tab[]} An array of tabs containing the current average, maximum, and minimum values.
+ */
 export function getMonthlyTabs(
   data: WeatherHistory["rilevazioniUltimi30Giorni"],
   key: string
 ): Tab[] {
   const min = ("min" + key) as keyof RilevazioneMese;
   const max = ("max" + key) as keyof RilevazioneMese;
-  const avg = ("media" + key) as keyof RilevazioneMese;
+  const avg = (key.toLowerCase() + "Media") as keyof RilevazioneMese;
+
   return [
     {
       key: "Attuale",
@@ -150,6 +295,13 @@ export function getMonthlyTabs(
   ];
 }
 
+/**
+ * Calculates the percentage difference between the maximum and minimum values of a given key in a weather history data.
+ *
+ * @param {WeatherHistory["rilevazioniUltimi30Giorni"]} data - The weather history data containing the monthly values.
+ * @param {string} key - The key to calculate the percentage difference for.
+ * @return {string} The percentage difference between the maximum and minimum values, formatted as a string.
+ */
 export function getMonthlyDelta(
   data: WeatherHistory["rilevazioniUltimi30Giorni"],
   key: string
@@ -157,7 +309,7 @@ export function getMonthlyDelta(
   const avg =
     key === "pioggiaGiornaliera"
       ? "pioggiaGiornaliera"
-      : (("media" + key) as keyof RilevazioneMese);
+      : ((key.toLowerCase() + "Media") as keyof RilevazioneMese);
   const arr = data.map((x) => Number(x[avg]));
 
   const max = Math.max(...arr);
