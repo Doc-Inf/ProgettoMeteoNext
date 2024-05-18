@@ -11,10 +11,11 @@ interface WeatherVals {
   avg: number;
 }
 
-type keys = "temp" | "hum" | "wind" | "rain" | "pressure";
+type keys = "temp" | "hum" | "wind" | "pressure";
 export type WeatherInfo = Record<keys, WeatherVals> & {
   // as day or month or year
   id: number;
+  rain: number;
 };
 const hiddenCols = [
   {
@@ -82,13 +83,13 @@ export const columns: ColumnDef<WeatherInfo>[] = [
   {
     accessorKey: "rain",
     header: () => (
-      <TooltipHeader text="Max / Med / Min">
+      <TooltipHeader text="Media">
         <span className="cursor-pointer">Pioggia (mm)</span>
       </TooltipHeader>
     ),
     cell: (info) => {
-      const { min, max, avg } = info.getValue<WeatherVals>();
-      return `${min} / ${max} / ${avg}`;
+      const rain = info.getValue<WeatherVals>();
+      return rain;
     },
   },
 ];
