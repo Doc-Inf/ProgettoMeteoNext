@@ -4,9 +4,10 @@ export async function GET(req: any) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const day = searchParams.get("giorno");
+    const year = searchParams.get("anno");
+    const month = searchParams.get("mese");
     const res = await fetch(
-      `https://www.itisvallauri.net/meteo3//php/datiStorico.php?giorno=${day}`,
+      `https://www.itisvallauri.net/meteo3//php/datiReport.php?anno=${year}&mese=${month}`,
       {
         method: "GET",
         headers: {
