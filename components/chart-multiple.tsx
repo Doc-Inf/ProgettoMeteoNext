@@ -4,16 +4,19 @@ import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 
-export default function MyChart({
+export default function ChartMultiple({
   IsInView,
-  data,
+  series,
   unit,
-  name,
   days,
   lessX,
 }: {
   IsInView?: boolean;
-  data: number[];
+  series: {
+    name: "max" | "min" | "med";
+    color: string;
+    data: number[];
+  }[];
   unit: string;
   name: string;
   days?: string[];
@@ -25,13 +28,6 @@ export default function MyChart({
   const windowSize = useWindowSize();
 
   // state obj for graph
-  const [series, setSeries] = useState<ApexAxisChartSeries>([
-    {
-      name: name,
-      color: "#17A34A",
-      data: data,
-    },
-  ]);
   const [options, setOptions] = useState<ApexCharts.ApexOptions>({
     chart: {
       toolbar: {
@@ -44,7 +40,7 @@ export default function MyChart({
         },
       },
     },
-    stroke: { curve: "smooth", colors: ["#17A34A"] },
+    stroke: { curve: "smooth" },
     fill: {
       colors: ["#17A34A"],
       opacity: 1,
@@ -78,7 +74,6 @@ export default function MyChart({
         "26/01",
         "27/01",
       ],
-
       tickAmount: lessX ? 4 : 8,
       tickPlacement: "between",
     },
@@ -124,6 +119,8 @@ export default function MyChart({
       },
     },
   });
+
+  const [graphWidth, setGraphWidth] = useState("100%");
   // update theme on mode change
   useEffect(() => {
     setOptions((prevOpt) => ({

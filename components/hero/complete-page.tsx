@@ -2,17 +2,15 @@
 import HeroHeading from "@/components/headings/hero-heading";
 import HeroWeek from "@/components/hero/hero-week-temp";
 import HeroOverview from "@/components/hero/hero-overview";
-import HeroGraphs from "@/components/hero/hero-graphs";
 import AnimationWrapper from "@/components/ui/anim-wrapper";
 import { useRef } from "react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import HeroSkeleton from "@/components/hero/hero-skeleton";
 import { useQuery } from "@tanstack/react-query";
-import {
-  type WeatherOverviewData,
-  type WeatherGraphs,
-  RilevazioniGiornaliere,
+import type {
+  WeatherOverviewData,
+  WeatherGraphs,
 } from "@/constants/weather-types";
 import {
   getTabs,
@@ -20,9 +18,11 @@ import {
   getGraphs,
   getDailyGraphs,
 } from "@/constants/functions";
+import HeroGraphsMultiple from "./hero-graphs-multiple";
+import type { RilevazioniGiornaliere } from "@/constants/measurement-types";
 
 const fetchWeather = async () => {
-  const res = await fetch("./php/datiHome.php", {
+  const res = await fetch("api/db", {
     method: "GET",
     //revalidate every 5 minutes
     next: { revalidate: 300 },
@@ -50,7 +50,6 @@ export default function Home() {
   }
 
   if (error) {
-    console.error(error);
     return (
       <>
         <HeroHeading scrollRef={ref} />
@@ -76,17 +75,20 @@ export default function Home() {
     minTemp: getGraphs(data, "minTemperatura"),
     maxTemp: getGraphs(data, "maxTemperatura"),
     humidity: getGraphs(data, "umidita"),
+    minHumidity: getGraphs(data, "minUmidita"),
+    maxHumidity: getGraphs(data, "maxUmidita"),
     rain: getGraphs(data, "pioggia"),
     pressure: getGraphs(data, "pressione"),
+    minPressure: getGraphs(data, "minPressione"),
+    maxPressure: getGraphs(data, "maxPressione"),
   };
 
-  const lastUpdate = format(
-    data.ultimaRilevazione.dataOraUltimaRilevazione,
-    "dd MMMM, HH:mm",
-    {
-      locale: it,
-    }
-  );
+  const date = new Date(data.ultimaRilevazione.data);
+  date.setHours(data.ultimaRilevazione.ora.split(":")[0]);
+  date.setMinutes(data.ultimaRilevazione.ora.split(":")[1]);
+  const lastUpdate = format(date, "dd MMMM, HH:mm", {
+    locale: it,
+  });
 
   const weekDays = data.giorniSettimanaCorrente.map((d: string) =>
     format(d, "dd/MM")
@@ -107,12 +109,60 @@ export default function Home() {
           days={weekDays}
         />
 
-        <HeroGraphs
+        <HeroGraphsMultiple
           title="settimana"
           graphs={{
-            temp: weekData?.temp,
-            humidity: weekData?.humidity,
-            pressure: weekData?.pressure,
+            temp: [
+              {
+                name: "max",
+                color: "#f87171",
+                data: weekData?.maxTemp,
+              },
+              {
+                name: "med",
+                color: "#17A34A",
+                data: weekData?.temp,
+              },
+              {
+                name: "min",
+                color: "#22d3ee",
+                data: weekData?.minTemp,
+              },
+            ],
+            humidity: [
+              {
+                name: "max",
+                color: "#f87171",
+                data: weekData?.maxHumidity,
+              },
+              {
+                name: "med",
+                color: "#17A34A",
+                data: weekData?.humidity,
+              },
+              {
+                name: "min",
+                color: "#22d3ee",
+                data: weekData?.minHumidity,
+              },
+            ],
+            pressure: [
+              {
+                name: "max",
+                color: "#f87171",
+                data: weekData?.maxPressure,
+              },
+              {
+                name: "med",
+                color: "#17A34A",
+                data: weekData?.pressure,
+              },
+              {
+                name: "min",
+                color: "#22d3ee",
+                data: weekData?.minPressure,
+              },
+            ],
             rain: weekData?.rain,
           }}
           days={weekDays}
