@@ -30,12 +30,15 @@ export default function ProjectMembers() {
           people={[
             { name: "Boaretto Lorenzo", subj: "Informatica" },
             { name: "Cipolla Emilio", subj: "Informatica" },
+            { name: "Crespi Mirko", subj: "Informatica" },
             { name: "Fonti Luca", subj: "Informatica" },
             { name: "Fruncillo Carmine", subj: "Informatica" },
+            { name: "Giardino Leonardo", subj: "Informatica" },
             { name: "Imbastari Riccardo", subj: "Informatica" },
             { name: "Pietrosanti Francesco", subj: "Informatica" },
+            { name: "Rossi Jonathan", subj: "Informatica" },
             { name: "Somma Francesco", subj: "Informatica" },
-          ]}
+          ].sort()}
         />
         <PeopleCard
           title="Studenti Scientifico"
