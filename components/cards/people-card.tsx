@@ -18,16 +18,16 @@ export default function PeopleCard({
     <Card
       className={cn(
         `${
-          single ? `m-auto lg:hidden` : `h-[36vh]`
-        } shadow-sm shadow-primary shrink-0 overflow-hidden`,
+          single ? `m-auto lg:hidden h-[40vh]` : `h-[46vh]`
+        } shadow-sm shadow-primary shrink-0 overflow-scroll relative`,
         className
       )}
     >
-      <CardHeader>
+      <CardHeader className="sticky top-0 w-full !bg-card z-10">
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className={`${single ? " " : "h-60"}`}>
+        <ScrollArea className={`${single ? " " : "h-calc(100% - 60px)"}`}>
           {people.map((person, index) => (
             <div key={index} className="flex items-center my-2 space-x-4">
               <span className="flex w-2 h-2 rounded-full translate-y-1 bg-primary" />

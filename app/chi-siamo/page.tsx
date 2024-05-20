@@ -20,7 +20,7 @@ export default function About() {
         <Timeline />
         <ProjectMembers />
         {/* LOCATION */}
-        <h2 className="pb-2 text-4xl md:text-6xl font-medium tracking-tight scroll-m-20 first:mt-0 drop-shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] mb-8 text-center">
+        <h2 className="pb-2 mt-96 pt-40 md:pt-0 md:mt-20 text-4xl md:text-6xl font-medium tracking-tight scroll-m-20 first:mt-0 drop-shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] mb-8 text-center">
           Dove ci troviamo
         </h2>
         <iframe
