@@ -120,7 +120,6 @@ export default function ChartMultiple({
     },
   });
 
-  const [graphWidth, setGraphWidth] = useState("100%");
   // update theme on mode change
   useEffect(() => {
     setOptions((prevOpt) => ({

@@ -110,6 +110,7 @@ export default function Home() {
         />
 
         <HeroGraphsMultiple
+          inViewLoad={false}
           title="settimana"
           graphs={{
             temp: [

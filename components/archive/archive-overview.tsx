@@ -168,7 +168,6 @@ const ArchiveOverview = ({
             {data.daily && (
               <HeroGraphs
                 title="giornata"
-                inViewLoad={false}
                 graphs={{ ...data.daily }}
                 days={data.daily?.times}
               />

@@ -131,7 +131,6 @@ const HeroOverview = forwardRef<
                 {data.daily && (
                   <HeroGraphs
                     title="giornata"
-                    inViewLoad={false}
                     graphs={data.daily}
                     lessX={true}
                     days={data.daily.times}

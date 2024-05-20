@@ -27,7 +27,7 @@ export default function HeroGraphs({
 }) {
   // load graph only when in view
   const graph = useRef(null);
-  const IsInViewGraph = useInView(graph);
+  const IsInViewGraph = useInView(graph, { once: true });
 
   return (
     <Container className="order-1 w-full col-span-3 lg:h-full lg:mt-0">

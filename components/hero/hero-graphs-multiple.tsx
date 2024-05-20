@@ -35,12 +35,12 @@ export default function HeroGraphsMultiple({
 }) {
   // load graph only when in view
   const graph = useRef(null);
-  const IsInViewGraph = useInView(graph);
+  const IsInViewGraph = useInView(graph, { once: true });
 
   return (
     <Container className="order-1 w-full col-span-3 lg:h-full lg:mt-0">
       {/* TABS FOR THE GRAPHS */}
-      <Tabs defaultValue="temperature">
+      <Tabs defaultValue="temperature" className="min-h-[430px]">
         {/* TITLE */}
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-2xl font-semibold" ref={graph}>
