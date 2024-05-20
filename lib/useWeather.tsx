@@ -1,84 +1,5 @@
 import { Cloud, CloudRain, Sun, SunDim } from "lucide-react";
 
-// WeatherZ algo found here: https://earthscience.stackexchange.com/questions/16366/weather-forecast-based-on-pressure-temperature-and-humidity-only-for-implement
-const ZMAP = [
-  "Settled Fine",
-  "Fine Weather",
-  "Fine Becoming Less Settled",
-  "Fairly Fine Showery Later",
-  "Showery Becoming more unsettled",
-  "Unsettled, Rain later",
-  "Rain at times, worse later.",
-  "Rain at times, becoming very unsettled",
-  "Very Unsettled, Rain",
-  "Settled Fine",
-  "Fine Weather",
-  "Fine, Possibly showers",
-  "Fairly Fine, Showers likely",
-  "Showery Bright Intervals",
-  "Changeable some rain",
-  "Unsettled, rain at times",
-  "Rain at Frequent Intervals",
-  "Very Unsettled, Rain",
-  "Stormy, much rain",
-  "Settled Fine",
-  "Fine Weather",
-  "Becoming Fine",
-  "Fairly Fine, Improving",
-  "Fairly Fine, Possibly showers, early",
-  "Showery Early, Improving",
-  "Changeable Mending",
-  "Rather Unsettled Clearing Later",
-  "Unsettled, Probably Improving",
-  "Unsettled, short fine Intervals",
-  "Very Unsettled, Finer at times",
-  "Stormy, possibly improving",
-  "Stormy, much rain",
-];
-export function useWeatherZ({
-  altitude,
-  temperature,
-  pressure,
-  yesterdayPressure,
-  windDir,
-  date,
-}: {
-  altitude: number;
-  temperature: number;
-  pressure: number;
-  yesterdayPressure: number;
-  windDir: string;
-  date: string;
-}) {
-  const adjH = altitude * 0.0065;
-  const p0: number =
-    pressure * (1 - Math.pow(adjH / (temperature + adjH + 273.15), -5.257));
-
-  const isIncreasing = pressure - yesterdayPressure > 0;
-  let z = isIncreasing ? 179 - (2 * p0) / 129 : 130 - p0 / 81;
-
-  if (windDir.includes("N")) z += 1;
-  if (windDir.includes("S")) z -= 2;
-
-  const month = new Date(date).getMonth();
-  const season = ["summer", "autumn", "winter", "spring"][
-    ((month / 12) * 4) % 4
-  ];
-
-  if (season === "summer") z += 1;
-  if (season === "winter") z -= 1;
-
-  const res = ZMAP[z];
-  let status: string;
-  if (z <= 6) status = "Cielo limpido";
-  else if (z <= 9) status = "Pioggia";
-  else if (z <= 16) status = "Pioggia moderata";
-  else if (z <= 19) status = "Pioggia forte";
-
-  return {
-    status: "",
-  };
-}
 export function useWeather({
   temperature,
   pressure,
@@ -116,3 +37,80 @@ export const Icon: React.FC<{ status: string }> = ({ status }) => {
       return <SunDim stroke="#17A34A" />;
   }
 };
+
+// WeatherZ algo found here: https://earthscience.stackexchange.com/questions/16366/weather-forecast-based-on-pressure-temperature-and-humidity-only-for-implement
+const ZMAP = [
+  "Settled Fine",
+  "Fine Weather",
+  "Fine Becoming Less Settled",
+  "Fairly Fine Showery Later",
+  "Showery Becoming more unsettled",
+  "Unsettled, Rain later",
+  "Rain at times, worse later.",
+  "Rain at times, becoming very unsettled",
+  "Very Unsettled, Rain",
+  "Settled Fine",
+  "Fine Weather",
+  "Fine, Possibly showers",
+  "Fairly Fine, Showers likely",
+  "Showery Bright Intervals",
+  "Changeable some rain",
+  "Unsettled, rain at times",
+  "Rain at Frequent Intervals",
+  "Very Unsettled, Rain",
+  "Stormy, much rain",
+  "Settled Fine",
+  "Fine Weather",
+  "Becoming Fine",
+  "Fairly Fine, Improving",
+  "Fairly Fine, Possibly showers, early",
+  "Showery Early, Improving",
+  "Changeable Mending",
+  "Rather Unsettled Clearing Later",
+  "Unsettled, Probably Improving",
+  "Unsettled, short fine Intervals",
+  "Very Unsettled, Finer at times",
+  "Stormy, possibly improving",
+  "Stormy, much rain",
+];
+// NOT USED, only for future forecasts
+export function useWeatherZ({
+  altitude,
+  temperature,
+  pressure,
+  yesterdayPressure,
+  windDir,
+  date,
+}: {
+  altitude: number;
+  temperature: number;
+  pressure: number;
+  yesterdayPressure: number;
+  windDir: string;
+  date: string;
+}) {
+  const adjH = altitude * 0.0065;
+  const p0: number =
+    pressure * (1 - Math.pow(adjH / (temperature + adjH + 273.15), -5.257));
+
+  const isIncreasing = pressure - yesterdayPressure > 0;
+  let z = isIncreasing ? 179 - (2 * p0) / 129 : 130 - p0 / 81;
+
+  if (windDir.includes("N")) z += 1;
+  if (windDir.includes("S")) z -= 2;
+
+  const month = new Date(date).getMonth();
+  const season = ["summer", "autumn", "winter", "spring"][
+    ((month / 12) * 4) % 4
+  ];
+
+  if (season === "summer") z += 1;
+  if (season === "winter") z -= 1;
+
+  const res = ZMAP[z];
+
+  // TODO: convert weather status from ZMAP
+  return {
+    status: "",
+  };
+}

@@ -19,11 +19,11 @@ export default function NavBar() {
   const pathname = usePathname();
   return (
     <nav className="fixed top-0 z-50 w-screen border backdrop-blur-sm bg-background/90 border-zinc-700/45">
-      <div className="flex items-center justify-between gap-4 px-4 py-4 m-auto bg-transparent md:justify-normal md:px-8">
+      <div className="flex items-center justify-between px-4 py-4 m-auto bg-transparent gap-4 md:justify-normal md:px-8">
         {/* LOGO */}
         <Link
           href="https://www.itisvallauri.edu.it/"
-          className="flex items-center space-x-2 text-xl"
+          className="flex items-center text-xl space-x-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

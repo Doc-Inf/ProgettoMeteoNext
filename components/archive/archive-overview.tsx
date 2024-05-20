@@ -50,7 +50,7 @@ const ArchiveOverview = ({
       <div className="px-4 mb-8 col-span-full">
         <Container>
           {monthData ? (
-            <div className="flex w-full justify-center items-center gap-2 text-center">
+            <div className="flex items-center justify-center w-full text-center gap-2">
               <Clock className="text-primary" />
               <h4 className="font-normal tracking-tight text-md md:text-lg scroll-m-20">
                 {" "}
@@ -164,7 +164,7 @@ const ArchiveOverview = ({
               );
             })}
           </ContainerCols>
-          <div className="mt-4 px-5 md:px-0 ">
+          <div className="px-5 mt-4 md:px-0 ">
             {data.daily && (
               <HeroGraphs
                 title="giornata"

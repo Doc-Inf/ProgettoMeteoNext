@@ -122,7 +122,7 @@ export default function ReportTableYear() {
         </div>
       )}
       {mutation.isError && (
-        <p className="text-center text-lg mt-8 md:text-xl text-destructive">
+        <p className="mt-8 text-lg text-center md:text-xl text-destructive">
           {mutation.error.message}
         </p>
       )}

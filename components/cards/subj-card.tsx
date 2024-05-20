@@ -28,7 +28,7 @@ export default function SubjCard({
           {title}
         </CardTitle>
         {src && (
-          <div className="absolute top-0 -translate-y-1/2 border-2 rounded-full md:-translate-y-px md:static border-primary">
+          <div className="absolute top-0 border-2 rounded-full -translate-y-1/2 md:-translate-y-px md:static border-primary">
             <Image
               src={src}
               width={0}

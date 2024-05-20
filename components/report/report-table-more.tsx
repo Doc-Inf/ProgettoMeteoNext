@@ -67,7 +67,7 @@ export default async function ReportTableMore() {
           {info && <ReportTable data={info} columns={columns} type={"year"} />}
           {!info && <Skeleton className=" md:px-10 w-[90%] m-auto h-full" />}
           {err !== "" && (
-            <p className="text-center text-lg mt-8  md:text-xl text-destructive">
+            <p className="mt-8 text-lg text-center  md:text-xl text-destructive">
               {err}
             </p>
           )}

@@ -27,29 +27,6 @@ const hiddenCols = [
 
 const columnHelper = createColumnHelper<WeatherInfo>();
 export const columns: ColumnDef<WeatherInfo>[] = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         (table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() &&
-  //             "indeterminate")) as CheckedState
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Seleziona una riga"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     id: "type",
     accessorKey: "id",

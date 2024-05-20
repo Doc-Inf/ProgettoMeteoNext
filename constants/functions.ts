@@ -73,13 +73,13 @@ export function getTabs(data: DBResult, key: string): Tab[] {
     {
       key: "Massima",
       value: Number(
-        data[("max" + capKey + "Settimanale") as keyof DBArrays][6]
+        data[("max" + capKey + "Settimanale") as keyof DBArrays].at(-1)
       ),
     },
     {
       key: "Minima",
       value: Number(
-        data[("min" + capKey + "Settimanale") as keyof DBArrays][6]
+        data[("min" + capKey + "Settimanale") as keyof DBArrays].at(-1)
       ),
     },
   ];
@@ -296,25 +296,35 @@ export function getMonthlyTabs(
 }
 
 /**
- * Calculates the percentage difference between the maximum and minimum values of a given key in a weather history data.
- *
- * @param {WeatherHistory["rilevazioniUltimi30Giorni"]} data - The weather history data containing the monthly values.
- * @param {string} key - The key to calculate the percentage difference for.
- * @return {string} The percentage difference between the maximum and minimum values, formatted as a string.
+ * Calculates the monthly delta for each tab in the given tabs object.
+ *  - ⚠️ Can throw an error if a key of the tabs object is not iterable.
+ * @param {Record<"temp" | "pressure" | "humidity", Tab[]>} tabs - An object containing tabs for temperature, pressure, and humidity.
+ * @return {Record<"temp" | "pressure" | "humidity" | "rain", string>} - An object containing the monthly delta for each tab, including rain.
  */
 export function getMonthlyDelta(
-  data: WeatherHistory["rilevazioniUltimi30Giorni"],
-  key: string
-): string {
-  const avg =
-    key === "pioggiaGiornaliera"
-      ? "pioggiaGiornaliera"
-      : ((key.toLowerCase() + "Media") as keyof RilevazioneMese);
-  const arr = data.map((x) => Number(x[avg]));
+  tabs: Record<"temp" | "pressure" | "humidity", Tab[]>
+) {
+  const delta = {
+    temp: "",
+    humidity: "",
+    pressure: "",
+    rain: "Pioggia totale mese",
+  };
+  for (const key of Object.keys(tabs)) {
+    const k = key as "temp" | "pressure" | "humidity";
+    // avoid unecessary throwing
+    if (!(k in delta) || key === "rain") continue;
 
-  const max = Math.max(...arr);
-  const delta = Number((((max - Math.min(...arr)) / max) * 100).toFixed(1));
-  const res = delta < 0 ? "-" + delta : "+" + delta + " % tra massimo e minimo";
+    // check if tab is iterable, if not throw
+    if (typeof tabs[k][Symbol.iterator] !== "function")
+      throw new Error(`Tab ${k} not iterable`);
 
-  return res;
+    const [_, max, min] = tabs[k];
+
+    delta[k] = `+${(((max.value - min.value) / min.value) * 100).toFixed(
+      1
+    )}% tra massimo e minimo`;
+  }
+
+  return delta;
 }

@@ -78,13 +78,11 @@ export function ArchiveForm() {
                 .reduce((sum, curr) => sum + curr, 0)
                 .toFixed(2)
             ),
-            // TEMP SOLUTION, TODO: FIX
-            // @ts-ignore
             delta: {
-              temp: getMonthlyDelta(month, "Temperatura"),
-              humidity: getMonthlyDelta(month, "Umidita"),
-              pressure: getMonthlyDelta(month, "Pressione"),
-              rain: getMonthlyDelta(month, "pioggiaGiornaliera"),
+              temp: "-1",
+              humidity: "-1",
+              pressure: "-1",
+              rain: "-1",
             },
           },
           // separator that won't be used in data formats in db
@@ -147,6 +145,13 @@ export function ArchiveForm() {
             days: month.map((x) => format(x.data, "dd/MM")),
           },
         };
+
+        // getMonthlyDelta can throw
+        try {
+          obj.data.delta = getMonthlyDelta(obj.data);
+        } catch (e) {
+          console.log(e);
+        }
 
         return obj;
       }
@@ -231,7 +236,7 @@ export function ArchiveForm() {
 
       {mutation.isPending && <HeroSkeleton />}
       {mutation.isError && <div>{JSON.stringify(mutation.error)}</div>}
-      {/* @ts-ignore  TEMP FIX, TODO: VALID TYPES*/}
+      {/* @ts-ignore */}
       {mutation.isSuccess && <ArchiveOverview {...mutation.data} />}
     </>
   );
