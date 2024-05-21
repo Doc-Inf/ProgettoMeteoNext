@@ -17,7 +17,7 @@ export default function SubjectSection() {
         <SubjCard
           title="Elettronica e Robotica"
           src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?q=80&w=1769&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          par="Il Diplomato in Elettronica ed Elettrotecnica ha competenze specifiche nel campo dei materiali e delle tecnologie costruttive dei <strong>sistemi elettrici, elettronici e delle macchine elettriche, della generazione, elaborazione e trasmissione dei <strong>segnali elettrici ed elettronici, dei sistemi per la generazione, conversione e trasporto dell’energia elettrica e dei relativi impianti di distribuzione.
+          par="Il Diplomato in Elettronica ed Elettrotecnica ha competenze specifiche nel campo dei materiali e delle tecnologie costruttive dei sistemi elettrici, elettronici e delle macchine elettriche, della generazione, elaborazione e trasmissione dei segnali elettrici ed elettronici, dei sistemi per la generazione, conversione e trasporto dell’energia elettrica e dei relativi impianti di distribuzione.
           Collabora nella progettazione, costruzione e collaudo di sistemi elettrici ed elettronici di impianti elettrici e sistemi di automazione."
         />
         <SubjCard
