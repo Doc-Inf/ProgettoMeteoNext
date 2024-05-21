@@ -101,7 +101,7 @@ export function getGraphs(data: DBResult, key: string): number[] {
     return data[k].map((x: string | null) =>
       x !== null ? Number(x.replaceAll(",", "")) : 0
     );
-  return data[k].map((x: string | null) => (x !== null ? Number(x) : 0));
+  return data[k].map((x: string | null) => Number(x) || 0);
 }
 
 /**
@@ -290,7 +290,7 @@ export function getMonthlyTabs(
     },
     {
       key: "Minima",
-      value: Math.min(...data.map((x) => Number(x[min]))),
+      value: Math.min(...data.map((x) => Number(x[min]) || Infinity)),
     },
   ];
 }

@@ -55,10 +55,21 @@ export function ArchiveForm() {
         options
       );
 
+      if (!res.ok) throw new Error("Nessuna rilevazione trovata");
+
       const data: WeatherHistory = await res.json();
 
       if (mode === "day") {
         const day = data.rilevazioniGiornaliere;
+
+        if (!day || day.length === 0)
+          throw new Error(
+            `Nessuna rilevazione giornaliera trovata per il giorno ${format(
+              date,
+              "dd/MM/yyyy"
+            )}`
+          );
+
         const obj = {
           lastUpdate: day.at(-1)!.data,
           data: getArchiveDaily(day, getDailyGraphs(day)),
@@ -66,6 +77,14 @@ export function ArchiveForm() {
         return obj;
       } else {
         const month = data.rilevazioniUltimi30Giorni;
+
+        if (!month || month.length === 0)
+          throw new Error(
+            `Nessuna rilevazione mensile trovata per il mese ${format(
+              date,
+              "dd/MM/yyyy"
+            )}`
+          );
 
         const obj = {
           data: {
@@ -78,6 +97,7 @@ export function ArchiveForm() {
                 .reduce((sum, curr) => sum + curr, 0)
                 .toFixed(2)
             ),
+            // update later when the obj.data is defined
             delta: {
               temp: "-1",
               humidity: "-1",
@@ -162,6 +182,7 @@ export function ArchiveForm() {
     if (!mutation.data) mutation.mutate();
   }, []);
 
+  console.log(mutation);
   return (
     <>
       <div className="mb-32 grid md:grid-cols-[2fr_1fr_0.2fr] gap-4 max-w-screen-md m-auto px-4 ">
@@ -235,7 +256,11 @@ export function ArchiveForm() {
       </div>
 
       {mutation.isPending && <HeroSkeleton />}
-      {mutation.isError && <div>{JSON.stringify(mutation.error)}</div>}
+      {mutation.isError && (
+        <p className="mt-8 text-lg text-center md:text-xl text-destructive">
+          {mutation.error.message}
+        </p>
+      )}
       {/* @ts-ignore */}
       {mutation.isSuccess && <ArchiveOverview {...mutation.data} />}
     </>

@@ -27,7 +27,8 @@ const fetchWeather = async () => {
     //revalidate every 5 minutes
     next: { revalidate: 300 },
   });
-  if (!res.ok) throw new Error("Failed to fetch");
+  if (!res.ok)
+    throw new Error("Impossibile caricare i dati, riprova più tardi");
 
   return res.json();
 };
@@ -53,7 +54,12 @@ export default function Home() {
     return (
       <>
         <HeroHeading scrollRef={ref} />
-        <HeroSkeleton ref={ref} />
+        <p
+          className="mt-8 text-lg text-center md:text-xl text-destructive"
+          ref={ref}
+        >
+          {error.message}
+        </p>
       </>
     );
   }
@@ -101,7 +107,7 @@ export default function Home() {
       <AnimationWrapper>
         <HeroOverview ref={ref} data={todayData} lastUpdate={lastUpdate} />
       </AnimationWrapper>
-      <div className="justify-center px-5 m-auto mt-10 max-w-screen-lg lg:grid-cols-5 lg:grid lg:gap-x-4 lg:px-0">
+      <div className="justify-center max-w-screen-lg px-5 m-auto mt-10 lg:grid-cols-5 lg:grid lg:gap-x-4 lg:px-0">
         <HeroWeek
           title="settimana"
           min={weekData?.minTemp}
