@@ -1,5 +1,6 @@
 <?php     
     require_once 'functions.php';
+
     $lastDataDay = getLastDay($db);
     $dayBeforeLastDataDay = getDayBefore($lastDataDay);
        
@@ -72,6 +73,8 @@
              "maxPressioneSettimanale" => $maxPressioneSettimanale,
              "minPressioneSettimanale" => $minPressioneSettimanale,
             ];
+
+    header('Content-type: application/json');
     echo json_encode($dati);
 
     

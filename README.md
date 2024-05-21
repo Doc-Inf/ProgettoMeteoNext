@@ -13,7 +13,7 @@ Da terminale digitare:
 - `components/report/report-table-month.tsx` (ln: 24) in `php/datiReport.php?anno=${new Date().getFullYear()}&mese=${month}`
 - `components/report/report-table-year.tsx` (ln: 24) in `php/datiReport.php?anno=${year}`
 
-**Non modificare** il link `components/report/report-table-more.tsx` (ln: 20) servirebbe relativo: "php/datiReport.php", ma rimane server side, quindi non toccare il link assoulto
+**Modificare** il link in `components/report/report-table-more.tsx` (ln: 20) in "https://www.itisvallauri.net/meteo/php/datiReport.php". Servirebbe relativo: "php/datiReport.php", ma rimane server side, quindi non toccare il link assoluto
 
 3.  compilare utilizzando: `npx next build`
 4.  Modificare tutti i link assoulti in relativi modificando tutte le occorrenze `src="/` in `src="./`
