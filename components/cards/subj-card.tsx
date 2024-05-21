@@ -33,8 +33,7 @@ export default function SubjCard({
               src={src}
               width={0}
               height={0}
-              objectFit="cover"
-              className="p-0 m-0 rounded-full w-14 h-14 grayscale"
+              className="p-0 m-0 rounded-full w-14 h-14 grayscale object-cover"
               alt={title}
             />
           </div>

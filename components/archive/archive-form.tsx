@@ -182,7 +182,6 @@ export function ArchiveForm() {
     if (!mutation.data) mutation.mutate();
   }, []);
 
-  console.log(mutation);
   return (
     <>
       <div className="mb-32 grid md:grid-cols-[2fr_1fr_0.2fr] gap-4 max-w-screen-md m-auto px-4 ">
@@ -190,6 +189,7 @@ export function ArchiveForm() {
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
+              aria-label="Seleziona una data"
               className={cn(
                 "w-[280px] col-span-2  md:col-span-1 m-auto justify-start text-left font-normal rounded-3xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900/[0.5] dark:border-border/20 bg-white border border-zinc-200/50",
                 !date && "text-muted-foreground "
@@ -230,13 +230,21 @@ export function ArchiveForm() {
           <SelectContent className="w-[180px] rounded-xl shadow-md shadow-input dark:shadow-none dark:bg-stone-900 dark:border-border/20 bg-white border border-zinc-200/50 pb-3">
             <SelectGroup className="px-2">
               <SelectLabel className="-px-1">Modalità</SelectLabel>
-              <SelectItem className="text-md" value="month">
+              <SelectItem
+                className="text-md"
+                value="month"
+                aria-label="Mensile"
+              >
                 <div className="flex items-center justify-between">
                   <CalendarIcon className="w-3 h-3 me-2" />
                   Mensile
                 </div>
               </SelectItem>
-              <SelectItem className="text-md" value="day">
+              <SelectItem
+                className="text-md"
+                value="day"
+                aria-label="Giornaliera"
+              >
                 <div className="flex items-center justify-between">
                   <Sunrise className="w-3 h-3 me-2" />
                   Giornaliera

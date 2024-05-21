@@ -100,6 +100,12 @@ export default function ReportTableMonth() {
                     <SelectItem
                       className="text-md"
                       value={i.toString()}
+                      aria-label={
+                        "Mese di " +
+                        format(new Date().setMonth(i), "MMMM", {
+                          locale: it,
+                        })
+                      }
                       key={i + 1}
                     >
                       {format(new Date().setMonth(i), "MMMM", {

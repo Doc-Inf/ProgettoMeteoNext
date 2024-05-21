@@ -96,6 +96,7 @@ export default function ReportTableYear() {
                 <SelectItem
                   className="text-md"
                   value={(currYear - 3 + i).toString()}
+                  aria-label={"Anno " + (i + currYear - 3).toString()}
                   key={i + currYear - 3}
                 >
                   {format(new Date().setFullYear(currYear - 3 + i), "yyyy", {
