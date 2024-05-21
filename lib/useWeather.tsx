@@ -11,11 +11,11 @@ export function useWeather({
 }) {
   let status = "Limpido";
 
-  if (humidity > 80 && temperature > 0 && temperature < 30) status = "Pioggia";
-  if (humidity > 50 && humidity < 80 && pressure >= 1000 && pressure <= 1020)
+  // TODO: FIND BETTER ALGORITHM FOR CALCULATING STATUS
+  if (humidity >= 80 && temperature <= 15) status = "Pioggia";
+  if (humidity <= 85 && humidity >= 75 && temperature <= 21)
     status = "Nuvoloso";
-  if (humidity < 50 && pressure >= 1010 && pressure <= 1020)
-    status = "Soleggiato";
+  if (humidity <= 50 && temperature >= 15) status = "Soleggiato";
   if (pressure > 1020) status = "Limpido";
 
   return {
