@@ -25,6 +25,7 @@
         "rilevazioniMese" => $rilevazioniMese
     ];
     
+    header('Content-type: application/json');
     echo json_encode($dati);
 
     function getDayBefore(string $day): string {
