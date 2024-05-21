@@ -6,7 +6,7 @@ export default function SchoolInfo() {
       <h2 className="order-1 pb-6 text-4xl font-normal tracking-tight text-center md:text-6xl scroll-m-20 first:mt-0 xl:col-span-2">
         La nostra scuola
       </h2>
-      <h4 className="order-3 mt-6 mb-8 text-xl font-medium tracking-tight text-justify col-span-2 xl:order-2 lg:px-40 md:text-center scroll-m-20">
+      <h4 className="order-3 col-span-2 mt-6 mb-8 text-xl font-medium tracking-tight text-justify xl:order-2 lg:px-40 md:text-center scroll-m-20">
         La scuola viene istituita nell&lsquo; A. S. 1960 /61 come succursale
         dell&lsquo;I.T.I.S. &quot;E. Fermi&quot; di Roma all&lsquo;epoca
         esistevano solo tre sezioni: la sezione A di 37 alunni la sezione B di
