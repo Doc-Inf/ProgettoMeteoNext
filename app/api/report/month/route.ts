@@ -7,7 +7,7 @@ export async function GET(req: any) {
     const year = searchParams.get("anno");
     const month = searchParams.get("mese");
     const res = await fetch(
-      `https://www.itisvallauri.net/meteo3//php/datiReport.php?anno=${year}&mese=${month}`,
+      `https://www.itisvallauri.net/meteo/php/datiReport.php?anno=${year}&mese=${month}`,
       {
         method: "GET",
         headers: {

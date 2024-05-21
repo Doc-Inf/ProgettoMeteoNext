@@ -13,16 +13,18 @@ import {
 import { it } from "date-fns/locale";
 import { WeatherArchive } from "@/constants/weather-types";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
+import MonthPicker from "./report-month-picker";
 
 export default function ReportTableMonth() {
-  const currMonth = new Date().getMonth();
+  const [currMonth, setCurrMonth] = useState(new Date());
+  const [currYear, setCurrYear] = useState(format(new Date(), "yyyy"));
 
   const mutation = useMutation({
     mutationFn: async (month: string) => {
       const res = await fetch(
-        `api/report/month?anno=${new Date().getFullYear()}&mese=${month}`,
+        `api/report/month?anno=${currYear}&mese=${month}`,
         {
           method: "GET",
           headers: {
@@ -69,54 +71,25 @@ export default function ReportTableMonth() {
   });
 
   useEffect(() => {
-    mutation.mutate((currMonth + 1).toString());
+    mutation.mutate((currMonth.getMonth() + 1).toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="mt-40">
       <div className="lg:w-[1200px] m-auto grid md:grid-cols-2 *:m-auto  gap-2 items-center mb-4">
         <p className="text-lg text-center lg:text-3xl md:text-xl text-foreground">
-          Rilevamenti mensili
+          Rilevamenti {format(currMonth, "LLLL", { locale: it })} {currYear}
         </p>
 
-        <Select
-          defaultValue={currMonth.toString()}
-          onValueChange={(d) => mutation.mutate((Number(d) + 1).toString())}
-        >
-          <SelectTrigger className="w-[280px] rounded-xl shadow-md shadow-input border-primary/20 dark:shadow-none">
-            <SelectValue
-              placeholder="Mese"
-              className="text-white"
-              aria-label="Seleziona un mese"
-            />
-            <p className="sr-only">Anno da cercare</p>
-          </SelectTrigger>
-          <SelectContent className="w-[280px] rounded-xl  shadow-input dark:shadow-none pb-3">
-            <SelectGroup className="px-2">
-              <SelectLabel className="-px-1">Mese</SelectLabel>
-
-              {new Array(12).fill(0).map(
-                (_, i) =>
-                  i <= currMonth && (
-                    <SelectItem
-                      className="text-md"
-                      value={i.toString()}
-                      aria-label={
-                        "Mese di " +
-                        format(new Date().setMonth(i), "MMMM", {
-                          locale: it,
-                        })
-                      }
-                      key={i + 1}
-                    >
-                      {format(new Date().setMonth(i), "MMMM", {
-                        locale: it,
-                      })}
-                    </SelectItem>
-                  )
-              )}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <MonthPicker
+          currentMonth={currMonth}
+          currentYear={currYear}
+          onMonthChange={(m) => {
+            setCurrMonth(m);
+            mutation.mutate((m.getMonth() + 1).toString());
+          }}
+          onYearChange={setCurrYear}
+        />
       </div>
 
       <div className="h-[650px]">
