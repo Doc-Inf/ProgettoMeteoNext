@@ -25,20 +25,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=GOOGLE_ANALYTICS_ID"
-        ></Script>
+      <Script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=GOOGLE_ANALYTICS_ID"
+      ></Script>
 
-        <Script id="google-analytics">
-          {` window.dataLayer = window.dataLayer || [];
+      <Script id="google-analytics">
+        {` window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   
   gtag('config', 'GOOGLE_ANALYTICS_ID');`}
-        </Script>
-      </head>
+      </Script>
 
       <body
         className={cn(
