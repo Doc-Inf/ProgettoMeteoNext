@@ -10,7 +10,7 @@ Da terminale digitare:
 
 - `components/archive/archive-form.tsx` (ln: 53), in `php/datiStorico.php?giorno=${format(date, "yyyy-MM-dd")}`
 - `components/hero/complete-page.tsx` (ln: 25), in `php/datiHome.php`
-- `components/report/report-table-month.tsx` (ln: 24) in `php/datiReport.php?anno=${new Date().getFullYear()}&mese=${month}`
+- `components/report/report-table-month.tsx` (ln: 24) in `php/datiReport.php?anno=${currYear}&mese=${month}`
 - `components/report/report-table-year.tsx` (ln: 24) in `php/datiReport.php?anno=${year}`
 
 **Modificare** il link in `components/report/report-table-more.tsx` (ln: 20) in "https://www.itisvallauri.net/meteo/php/datiReport.php". Servirebbe relativo: "php/datiReport.php", ma rimane server side, quindi non toccare il link assoluto
