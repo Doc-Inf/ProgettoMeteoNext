@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import NavBar from "@/components/navbar/nav";
 import { cn } from "@/lib/utils";
-import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,19 +25,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=GOOGLE_ANALYTICS_ID"
-      ></Script>
-
-      <Script id="google-analytics">
-        {` window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  
-  gtag('config', 'GOOGLE_ANALYTICS_ID');`}
-      </Script>
-
       <body
         className={cn(
           "min-h-screen overflow-x-hidden w-screen bg-background font-sans antialiased pb-40",
@@ -50,6 +37,7 @@ export default function RootLayout({
           <ModeToggle className="fixed bottom-10 left-5" />
         </ThemeProvider>
       </body>
+      <GoogleAnalytics gaId="GOOGLE_ANALYTICS_ID" />
     </html>
   );
 }
