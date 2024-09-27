@@ -20,6 +20,7 @@ import MonthPicker from "./report-month-picker";
 export default function ReportTableMonth() {
   const [currMonth, setCurrMonth] = useState(new Date());
   const [currYear, setCurrYear] = useState(format(new Date(), "yyyy"));
+  const [selectedYear, setSelectedYear] = useState(format(new Date(), "yyyy"));
 
   const mutation = useMutation({
     mutationFn: async (month: string) => {
@@ -30,12 +31,14 @@ export default function ReportTableMonth() {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
+
+      setSelectedYear(currYear);
 
       if (!res.ok)
         throw new Error(
-          "Nessuna rilevazione trovata per l'anno selezionato, riprova più tardi"
+          "Nessuna rilevazione trovata per l'anno selezionato, riprova più tardi",
         );
 
       const data: WeatherArchive = await res.json();
@@ -78,7 +81,7 @@ export default function ReportTableMonth() {
     <div className="mt-40">
       <div className="lg:w-[1200px] m-auto grid md:grid-cols-2 *:m-auto  gap-2 items-center mb-4">
         <p className="text-lg text-center lg:text-3xl md:text-xl text-foreground">
-          Rilevamenti {format(currMonth, "LLLL", { locale: it })} {currYear}
+          Rilevamenti {format(currMonth, "LLLL", { locale: it })} {selectedYear}
         </p>
 
         <MonthPicker
